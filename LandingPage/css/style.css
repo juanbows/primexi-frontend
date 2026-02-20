@@ -22,3 +22,61 @@
         stroke-dashoffset: 0;
     }
 }
+
+/* ================================================
+   PHASE 1: 3D Mouse Parallax & Hero Tilt
+   ================================================ */
+
+/* Hero scene container */
+#hero-section {
+    perspective: 1200px;
+    transform-style: preserve-3d;
+}
+
+/* Dashboard mockup — JS owns the transform */
+#dashboard-mockup {
+    will-change: transform;
+    transform: perspective(1000px) rotateY(-5deg) rotateX(5deg);
+    transform-origin: center center;
+    transition: box-shadow 0.4s ease;
+}
+
+#dashboard-mockup:hover {
+    box-shadow:
+        0 0 60px rgba(0, 255, 133, 0.15),
+        0 40px 80px rgba(0, 0, 0, 0.6);
+}
+
+/* Floating rank card — JS owns the transform */
+#floating-card {
+    will-change: transform;
+    transform: perspective(800px) translateZ(30px) translateY(0px);
+}
+
+/* Glow blobs — JS will offset their position */
+#hero-blob-1,
+#hero-blob-2 {
+    will-change: transform;
+    transition: transform 0.05s linear;
+}
+
+/* Hero text layer — subtle depth shift */
+#hero-content {
+    will-change: transform;
+}
+
+/* Floating animation preserved for floating-card via JS */
+@keyframes float-3d {
+    0%, 100% { translate: 0 0; }
+    50%       { translate: 0 -12px; }
+}
+
+/* Canvas background for particle field (Phase 2) */
+#hero-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+}
