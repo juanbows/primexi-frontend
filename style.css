@@ -1,0 +1,24 @@
+/* Custom styles for PRIME XI - Premier League Edition */
+/* Most styles are handled via Tailwind and internal CSS in index.html for rapid development */
+
+@layer utilities {
+    .text-glow-pl {
+        text-shadow: 0 0 15px rgba(0, 255, 133, 0.4);
+    }
+
+    .text-glow-pink {
+        text-shadow: 0 0 15px rgba(233, 0, 82, 0.4);
+    }
+
+    .glass-panel {
+        background: rgba(61, 25, 91, 0.7);
+        backdrop-filter: blur(12px);
+    }
+}
+
+/* Specific animations if needed outside index.html */
+@keyframes dash {
+    to {
+        stroke-dashoffset: 0;
+    }
+}
