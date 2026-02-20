@@ -22,3 +22,81 @@
         stroke-dashoffset: 0;
     }
 }
+
+/* ─────────────────────────────────────────────
+   3D BALL STATION SECTION
+───────────────────────────────────────────── */
+
+/* SVG data connection lines */
+.data-line {
+    stroke-dasharray: 6 4;
+    animation: data-line-pulse 2.5s ease-in-out infinite;
+}
+
+@keyframes data-line-pulse {
+    0%, 100% { opacity: 0.6; stroke-dashoffset: 0; }
+    50%       { opacity: 1;   stroke-dashoffset: -20; }
+}
+
+/* Stat nodes — subtle entrance animation */
+.stat-node > div {
+    animation: node-appear 0.8s ease-out both;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stat-node > div:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 32px rgba(0, 255, 133, 0.15);
+}
+
+@keyframes node-appear {
+    from { opacity: 0; transform: scale(0.85); }
+    to   { opacity: 1; transform: scale(1); }
+}
+
+/* Canvas neon ring glow via drop-shadow */
+#ball-canvas {
+    transition: filter 0.5s ease;
+}
+
+/* Responsive: stack nodes below canvas on mobile */
+@media (max-width: 767px) {
+    #ball-field {
+        flex-direction: column;
+        gap: 2rem;
+        min-height: auto !important;
+    }
+
+    .stat-node {
+        position: static !important;
+        transform: none !important;
+    }
+
+    #ball-field {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    /* On mobile, show nodes in a 2-col grid below the canvas */
+    #ball-field > svg { display: none; } /* hide SVG lines on mobile */
+
+    .stat-node {
+        width: 45%;
+    }
+
+    /* Override absolute positioning — wrap with a flex row */
+    #ball-field .stat-node:nth-child(3), /* top left */
+    #ball-field .stat-node:nth-child(4)  /* top right */
+    {
+        position: relative !important;
+        top: auto !important; left: auto !important; right: auto !important;
+    }
+
+    #ball-field .stat-node:last-child {
+        position: relative !important;
+        bottom: auto !important;
+        left: auto !important;
+        transform: none !important;
+    }
+}
