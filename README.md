@@ -12,9 +12,10 @@ Nuestro norte absoluto es el diseño premium: un dashboard en dark mode (Midnigh
 - **Iconografía:** Lucide React / Tabler Icons
 
 ## 📂 Documentación para el Equipo
-1. **[Identidad de Marca (Colores y Tipografía)](./docs/BRANDING.md)**
-2. **[Funcionalidades de la Interfaz](./docs/FEATURES.md)**
-3. **[Sobre el Proyecto](./docs/ABOUT_US.md)**
+1. **[Identidad de Marca (Colores y Tipografía)](./Docs/BRANDING.md)**
+2. **[Modelo de Negocio](./Docs/BUSINESS_MODEL.md)**
+3. **[Funcionalidades de la Interfaz](./Docs/FEATURES.md)**
+4. **[Sobre el Proyecto](./Docs/ABOUT_US.md)**
 
 ---
 *Desarrollado para ganar la liga con elegancia.*
