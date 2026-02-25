@@ -50,6 +50,11 @@ const state = {
   lastRenderedFrame: -1,
   scheduledScrollFrame: 0,
   scheduledRenderFrame: 0,
+  cursorX: 0,
+  cursorY: 0,
+  cursorTargetX: 0,
+  cursorTargetY: 0,
+  cursorRaf: 0,
 };
 
 const dom = {};
@@ -371,6 +376,104 @@ function initSectionReveal() {
   sections.forEach((section) => observer.observe(section));
 }
 
+function initSoccerCursor() {
+  if (!dom.soccerCursor || !window.matchMedia("(pointer: fine)").matches) {
+    return;
+  }
+
+  const cursorNode = dom.soccerCursor;
+  const smoothness = 0.22;
+  const settleThreshold = 0.08;
+  const interactiveSelector = "a, button, summary, [data-scroll], .variant-btn";
+
+  document.body.classList.add("has-soccer-cursor");
+
+  state.cursorX = window.innerWidth * 0.5;
+  state.cursorY = window.innerHeight * 0.5;
+  state.cursorTargetX = state.cursorX;
+  state.cursorTargetY = state.cursorY;
+
+  cursorNode.style.setProperty("--cursor-x", `${state.cursorX}px`);
+  cursorNode.style.setProperty("--cursor-y", `${state.cursorY}px`);
+
+  const requestCursorFrame = () => {
+    if (state.cursorRaf) {
+      return;
+    }
+    state.cursorRaf = window.requestAnimationFrame(() => {
+      state.cursorRaf = 0;
+      state.cursorX += (state.cursorTargetX - state.cursorX) * smoothness;
+      state.cursorY += (state.cursorTargetY - state.cursorY) * smoothness;
+      cursorNode.style.setProperty("--cursor-x", `${state.cursorX.toFixed(2)}px`);
+      cursorNode.style.setProperty("--cursor-y", `${state.cursorY.toFixed(2)}px`);
+
+      const dx = Math.abs(state.cursorTargetX - state.cursorX);
+      const dy = Math.abs(state.cursorTargetY - state.cursorY);
+      if (dx > settleThreshold || dy > settleThreshold) {
+        requestCursorFrame();
+      }
+    });
+  };
+
+  const updateHoverState = (target) => {
+    const isInteractive = Boolean(target && target.closest(interactiveSelector));
+    cursorNode.classList.toggle("is-hover", isInteractive);
+  };
+
+  window.addEventListener(
+    "pointermove",
+    (event) => {
+      state.cursorTargetX = event.clientX;
+      state.cursorTargetY = event.clientY;
+      cursorNode.classList.add("is-visible");
+      updateHoverState(event.target);
+      requestCursorFrame();
+    },
+    { passive: true }
+  );
+
+  document.addEventListener(
+    "pointerover",
+    (event) => {
+      updateHoverState(event.target);
+    },
+    { passive: true }
+  );
+
+  document.addEventListener(
+    "pointerdown",
+    () => {
+      cursorNode.classList.add("is-down");
+    },
+    { passive: true }
+  );
+
+  const clearDownState = () => {
+    cursorNode.classList.remove("is-down");
+  };
+  document.addEventListener("pointerup", clearDownState, { passive: true });
+  document.addEventListener("pointercancel", clearDownState, { passive: true });
+
+  window.addEventListener(
+    "pointerout",
+    (event) => {
+      if (event.relatedTarget) {
+        return;
+      }
+      cursorNode.classList.remove("is-visible", "is-hover", "is-down");
+    },
+    { passive: true }
+  );
+
+  window.addEventListener(
+    "blur",
+    () => {
+      cursorNode.classList.remove("is-visible", "is-hover", "is-down");
+    },
+    { passive: true }
+  );
+}
+
 function bindInteractions() {
   dom.prevVariant.addEventListener("click", () => {
     switchVariant(state.activeVariant - 1);
@@ -424,6 +527,7 @@ function cacheDomNodes() {
   dom.prevVariant = document.getElementById("prevVariant");
   dom.nextVariant = document.getElementById("nextVariant");
   dom.productDescription = document.getElementById("productDescription");
+  dom.soccerCursor = document.getElementById("soccerCursor");
 }
 
 async function init() {
@@ -447,6 +551,7 @@ async function init() {
   lazyLoadRemainingFrames(state.activeVariant);
   requestRenderFrame(true);
   bindInteractions();
+  initSoccerCursor();
   initSectionReveal();
   updateActiveNavLink();
 
