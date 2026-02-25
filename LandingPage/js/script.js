@@ -473,3 +473,29 @@ function switchMetric(mode) {
     }, { threshold: 0.15 });
     featObs.observe(featSection);
 }());
+
+// ─── Dynamic Section Title — Letter Stagger Reveal ──────────────────────────
+(function initDTL() {
+    const wrap = document.getElementById('dtl-wrap');
+    if (!wrap) return;
+    const letters = wrap.querySelectorAll('.dtl-letter');
+    const bar     = document.getElementById('dtl-bar');
+    const barGlow = document.getElementById('dtl-bar-glow');
+
+    const obs = new IntersectionObserver(entries => {
+        if (!entries[0].isIntersecting) return;
+        // Stagger each letter in
+        letters.forEach((l, i) => {
+            setTimeout(() => l.classList.add('in'), i * 55);
+        });
+        // Animate bar after letters
+        const barDelay = letters.length * 55 + 100;
+        setTimeout(() => {
+            if (bar)     bar.classList.add('in');
+            if (barGlow) barGlow.classList.add('in');
+        }, barDelay);
+        obs.disconnect();
+    }, { threshold: 0.3 });
+
+    obs.observe(wrap);
+}());

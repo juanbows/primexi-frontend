@@ -179,6 +179,94 @@
             opacity: 1;
         }
 
+        /* ─── Dynamic Section Title (Domina tu Liga) ──────────── */
+        .dtl-eyebrow {
+            display: inline-flex; align-items: center; gap: 10px;
+            font-size: 10px; font-weight: 800; letter-spacing: 0.25em;
+            color: rgba(0,255,133,0.7);
+            font-family: 'JetBrains Mono', monospace;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+        .dtl-dot {
+            width: 5px; height: 5px; border-radius: 50%;
+            background: #00FF85;
+            animation: dotBlink 1.5s ease-in-out infinite;
+        }
+        .dtl-dot:last-child { animation-delay: 0.75s; }
+        @keyframes dotBlink { 0%,100%{opacity:0.3;transform:scale(1)} 50%{opacity:1;transform:scale(1.5)} }
+
+        .dtl-h2 {
+            font-size: clamp(2.8rem, 7vw, 5.5rem);
+            font-family: var(--font-display, 'Rajdhani', sans-serif);
+            font-weight: 900;
+            letter-spacing: -0.01em;
+            line-height: 1;
+            text-transform: uppercase;
+            margin-bottom: 0;
+            cursor: default;
+        }
+        .dtl-letter {
+            display: inline-block;
+            opacity: 0;
+            transform: translateY(40px) rotateX(-60deg);
+            transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.34,1.56,0.64,1);
+        }
+        .dtl-letter.in {
+            opacity: 1;
+            transform: translateY(0) rotateX(0);
+        }
+        .dtl-word { color: #fff; }
+        .dtl-word-accent .dtl-letter {
+            background: linear-gradient(90deg, #00FF85 0%, #04F5FF 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .dtl-h2:hover .dtl-word:not(.dtl-word-accent) .dtl-letter {
+            animation: letterGlitch 0.4s ease forwards;
+        }
+        @keyframes letterGlitch {
+            0%  { transform: translateX(0); }
+            20% { transform: translateX(-3px) skewX(-5deg); color: #04F5FF; }
+            40% { transform: translateX(3px) skewX(5deg); color: #E90052; }
+            60% { transform: translateX(-1px); color: #00FF85; }
+            80% { transform: translateX(1px); }
+            100%{ transform: translateX(0); color: inherit; }
+        }
+        .dtl-bar-wrap {
+            position: relative;
+            width: 100%; max-width: 300px;
+            margin: 18px auto 28px;
+            height: 3px;
+        }
+        .dtl-bar {
+            height: 3px;
+            background: linear-gradient(90deg, #00FF85 0%, #04F5FF 50%, #E90052 100%);
+            border-radius: 3px;
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 1s cubic-bezier(0.34,1.56,0.64,1) 0.6s;
+        }
+        .dtl-bar.in { transform: scaleX(1); }
+        .dtl-bar-glow {
+            position: absolute; inset: -4px 0;
+            background: linear-gradient(90deg, rgba(0,255,133,0.3) 0%, rgba(4,245,255,0.2) 50%, rgba(233,0,82,0.2) 100%);
+            filter: blur(8px);
+            border-radius: 4px;
+            opacity: 0;
+            transition: opacity 0.8s ease 1.4s;
+        }
+        .dtl-bar-glow.in { opacity: 1; }
+        .dtl-sub {
+            font-size: 1.05rem;
+            color: rgba(148,163,184,0.8);
+            max-width: 520px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+
         /* ─── 3D Feature Cards ──────────────────────────────────── */
         .feat-3d-wrap { perspective: 1000px; }
 
@@ -638,12 +726,36 @@
             <!-- Feature Grid -->
             <section id="features" class="relative z-10 bg-primary py-32 px-6">
                 <div class="max-w-7xl mx-auto">
-                    <div class="text-center mb-20">
-                        <h2
-                            class="text-4xl lg:text-5xl font-display font-bold text-white mb-6 uppercase tracking-tight">
-                            Domina tu Liga</h2>
-                        <p class="text-slate-400 max-w-2xl mx-auto text-lg lowercase first-letter:uppercase">Desbloquea
-                            el poder de la IA para tomar mejores decisiones cada jornada.</p>
+                    <div class="text-center mb-20 section-title-wrap" id="dtl-wrap">
+                        <!-- Eyebrow label -->
+                        <div class="dtl-eyebrow">
+                            <span class="dtl-dot"></span>
+                            <span>PRIME XI &mdash; MOTOR DE IA</span>
+                            <span class="dtl-dot"></span>
+                        </div>
+
+                        <!-- Main animated title -->
+                        <h2 class="dtl-h2" id="dtl-h2" aria-label="Domina tu Liga">
+                            <span class="dtl-word" id="dtl-w1">
+                                <span class="dtl-letter">D</span><span class="dtl-letter">O</span><span class="dtl-letter">M</span><span class="dtl-letter">I</span><span class="dtl-letter">N</span><span class="dtl-letter">A</span>
+                            </span>
+                            <span class="dtl-space">&nbsp;</span>
+                            <span class="dtl-word dtl-word-accent" id="dtl-w2">
+                                <span class="dtl-letter">T</span><span class="dtl-letter">U</span>
+                            </span>
+                            <span class="dtl-space">&nbsp;</span>
+                            <span class="dtl-word" id="dtl-w3">
+                                <span class="dtl-letter">L</span><span class="dtl-letter">I</span><span class="dtl-letter">G</span><span class="dtl-letter">A</span>
+                            </span>
+                        </h2>
+
+                        <!-- Animated underline bar -->
+                        <div class="dtl-bar-wrap">
+                            <div class="dtl-bar" id="dtl-bar"></div>
+                            <div class="dtl-bar-glow" id="dtl-bar-glow"></div>
+                        </div>
+
+                        <p class="dtl-sub">Desbloquea el poder de la IA para tomar <strong style="color:#00FF85">mejores decisiones</strong> cada jornada.</p>
                     </div>
                     <!-- 3D Feature Cards Grid -->
                     <div class="grid md:grid-cols-3 gap-8 items-start" id="feat-grid">
