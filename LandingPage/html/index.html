@@ -49,6 +49,201 @@
     </script>
 
     <style>
+        /* AI Console / Typewriter */
+        .ai-console {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(0, 255, 133, 0.2);
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 11px;
+            color: #00FF85;
+            line-height: 1.6;
+            backdrop-filter: blur(8px);
+        }
+
+        .ai-console .console-line {
+            opacity: 0.7;
+        }
+
+        .ai-console .console-line.highlight {
+            opacity: 1;
+            color: #04F5FF;
+        }
+
+        .ai-console .console-cursor {
+            display: inline-block;
+            width: 7px;
+            height: 12px;
+            background: #00FF85;
+            vertical-align: middle;
+            animation: blink 1s step-end infinite;
+        }
+
+        @keyframes blink {
+            50% {
+                opacity: 0;
+            }
+        }
+
+        /* Confidence interval pill */
+        .xp-confidence {
+            font-size: 0.7rem;
+            color: rgba(0, 255, 133, 0.5);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Fixture heatmap glow on player */
+        .player-easy {
+            border-color: #00FF85 !important;
+            box-shadow: 0 0 14px rgba(0, 255, 133, 0.45);
+        }
+
+        .player-medium {
+            border-color: #04F5FF !important;
+            box-shadow: 0 0 14px rgba(4, 245, 255, 0.35);
+        }
+
+        .player-hard {
+            border-color: #E90052 !important;
+            box-shadow: 0 0 14px rgba(233, 0, 82, 0.35);
+        }
+
+        /* Mini bar chart for feature cards */
+        .mini-bar-wrap {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .mini-bar-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 10px;
+            color: rgba(148, 163, 184, 0.8);
+        }
+
+        .mini-bar-track {
+            height: 5px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .mini-bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .mini-bar-fill.active {
+            transform: scaleX(1);
+        }
+
+        /* xP toggle badge */
+        .metric-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .metric-badge.active {
+            background: rgba(0, 255, 133, 0.15);
+            color: #00FF85;
+            border: 1px solid rgba(0, 255, 133, 0.3);
+        }
+
+        .metric-badge.inactive {
+            background: transparent;
+            color: rgba(148, 163, 184, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        /* Confidence band on chart */
+        .chart-confidence-band {
+            opacity: 0;
+            transition: opacity 1s ease 1s;
+        }
+
+        .chart-confidence-band.active {
+            opacity: 1;
+        }
+
+        /* ─── 3D Feature Cards ──────────────────────────────────── */
+        .feat-3d-wrap { perspective: 1000px; }
+
+        .feat-3d-card {
+            position: relative;
+            background: linear-gradient(145deg, rgba(15,10,30,0.97) 0%, rgba(8,4,18,1) 100%);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 20px;
+            padding: 28px 26px 22px;
+            overflow: hidden;
+            transition: transform 0.12s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            transform-style: preserve-3d;
+            will-change: transform;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.55), 0 1px 0 rgba(255,255,255,0.04) inset;
+        }
+        .feat-3d-card:hover { border-color: rgba(0,255,133,0.25); box-shadow: 0 24px 64px rgba(0,0,0,0.65), 0 0 40px rgba(0,255,133,0.08); }
+        .feat-3d-card--pink:hover { border-color: rgba(233,0,82,0.3); box-shadow: 0 24px 64px rgba(0,0,0,0.65), 0 0 40px rgba(233,0,82,0.1); }
+        .feat-3d-card--cyan:hover { border-color: rgba(4,245,255,0.25); box-shadow: 0 24px 64px rgba(0,0,0,0.65), 0 0 40px rgba(4,245,255,0.08); }
+
+        .feat-holo { position:absolute; inset:0; border-radius:20px; background:linear-gradient(135deg,transparent 0%,rgba(0,255,133,0.04) 30%,rgba(4,245,255,0.04) 50%,rgba(233,0,82,0.03) 70%,transparent 100%); background-size:200% 200%; animation:holoShift 6s ease infinite; pointer-events:none; }
+        .feat-holo--pink { background:linear-gradient(135deg,transparent 0%,rgba(233,0,82,0.06) 30%,rgba(255,200,0,0.03) 50%,rgba(233,0,82,0.04) 70%,transparent 100%); background-size:200% 200%; }
+        .feat-holo--cyan { background:linear-gradient(135deg,transparent 0%,rgba(4,245,255,0.05) 30%,rgba(0,255,133,0.03) 50%,rgba(4,245,255,0.05) 70%,transparent 100%); background-size:200% 200%; }
+        @keyframes holoShift { 0%{background-position:0% 0%} 50%{background-position:100% 100%} 100%{background-position:0% 0%} }
+
+        .feat-corner-glow { position:absolute; inset:0; pointer-events:none; border-radius:20px; }
+
+        .feat-orb { position:absolute; border-radius:50%; pointer-events:none; animation:orbFloat 5s ease-in-out infinite; }
+        .feat-orb-2 { animation-delay:-2.5s; animation-duration:7s; }
+        @keyframes orbFloat { 0%,100%{transform:translateY(0) scale(1)} 50%{transform:translateY(-12px) scale(1.08)} }
+
+        .feat-icon-wrap { position:relative; width:52px; height:52px; border-radius:14px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); display:flex; align-items:center; justify-content:center; margin-bottom:16px; }
+        .feat-icon-ring { position:absolute; inset:-6px; border-radius:18px; border:1px solid rgba(0,255,133,0.2); animation:ringPulse 3s ease-in-out infinite; }
+        @keyframes ringPulse { 0%,100%{opacity:0.4;transform:scale(1)} 50%{opacity:1;transform:scale(1.05)} }
+
+        .feat-chip { display:inline-block; font-size:9px; font-weight:800; letter-spacing:0.12em; padding:3px 10px; border-radius:999px; border:1px solid; margin-bottom:10px; }
+        .feat-chip-green { background:rgba(0,255,133,0.1); border-color:rgba(0,255,133,0.3); color:#00FF85; }
+
+        .feat-title { font-size:1.3rem; font-weight:800; color:#fff; line-height:1.25; margin-bottom:8px; font-family:var(--font-display,'Rajdhani',sans-serif); }
+        .feat-desc { font-size:0.8rem; color:rgba(148,163,184,0.75); line-height:1.55; }
+
+        .feat-chart-wrap { margin-top:20px; padding:10px; background:rgba(255,255,255,0.025); border:1px solid rgba(255,255,255,0.05); border-radius:12px; }
+        .feat-svg { width:100%; height:auto; }
+
+        .feat-radar-fill { animation:radarPulse 4s ease-in-out infinite; }
+        @keyframes radarPulse { 0%,100%{opacity:0.8} 50%{opacity:1;filter:drop-shadow(0 0 6px rgba(0,255,133,0.6))} }
+        .feat-radar-dot { animation:dotPop 2s ease-in-out infinite; }
+        @keyframes dotPop { 0%,100%{r:3} 50%{r:4.5} }
+
+        .feat-line-anim { stroke-dasharray:300; stroke-dashoffset:300; animation:lineDraw 2s ease forwards 0.5s; }
+        @keyframes lineDraw { to{stroke-dashoffset:0} }
+
+        .feat-arc { transform-origin:80px 50px; transform:rotate(-90deg); opacity:0; animation:arcIn 1s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+        .feat-arc:nth-child(2){animation-delay:0.1s} .feat-arc:nth-child(3){animation-delay:0.35s} .feat-arc:nth-child(4){animation-delay:0.6s}
+        @keyframes arcIn { to{opacity:1} }
+
+        .feat-stat-row { display:flex; align-items:center; justify-content:space-around; margin-top:16px; padding-top:14px; border-top:1px solid rgba(255,255,255,0.06); }
+        .feat-stat { text-align:center; }
+        .feat-stat-val { display:block; font-size:1rem; font-weight:800; font-family:monospace; line-height:1; }
+        .feat-stat-lbl { display:block; font-size:9px; color:rgba(148,163,184,0.5); text-transform:uppercase; letter-spacing:0.08em; margin-top:3px; }
+        .feat-stat-divider { width:1px; height:28px; background:rgba(255,255,255,0.07); }
+
+        .feat-featured-badge { position:absolute; top:16px; right:16px; font-size:9px; font-weight:900; letter-spacing:0.15em; padding:4px 10px; background:rgba(233,0,82,0.15); border:1px solid rgba(233,0,82,0.35); border-radius:999px; color:#E90052; animation:badgePulse 2s ease-in-out infinite; }
+        @keyframes badgePulse { 0%,100%{box-shadow:0 0 0 0 rgba(233,0,82,0)} 50%{box-shadow:0 0 12px 2px rgba(233,0,82,0.25)} }
+
+
         ::-webkit-scrollbar {
             width: 8px;
         }
@@ -263,6 +458,22 @@
                             análisis predictivo, algoritmos de transferencia en tiempo real y selecciones de capitán
                             basadas en datos.
                         </p>
+
+                        <!-- AI Simulation Console -->
+                        <div class="ai-console max-w-xl mx-auto lg:mx-0">
+                            <div class="flex items-center gap-2 mb-2 opacity-60">
+                                <span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
+                                <span style="font-size:10px;letter-spacing:0.15em;">PRIME XI ENGINE — LIVE</span>
+                            </div>
+                            <div class="console-line" id="cl-1">▶ Cargando fixtures GW26–GW31...</div>
+                            <div class="console-line highlight" id="cl-2">▶ Ejecutando 2,500,000 simulaciones...</div>
+                            <div class="console-line" id="cl-3">▶ xP calculado: Haaland → <strong
+                                    style="color:#00FF85">12.4 ±1.8 pts</strong></div>
+                            <div class="console-line" id="cl-4">▶ Transferencia óptima: <strong
+                                    style="color:#04F5FF">Palmer IN (£6.7m)</strong></div>
+                            <div class="console-line" style="margin-top:4px;">▶ <span class="console-cursor"></span>
+                            </div>
+                        </div>
                         <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                             <button
                                 class="magnetic flex items-center justify-center gap-2 rounded-lg h-14 px-10 bg-accent-green text-primary font-bold hover:bg-[#33ff9d] transition-all transform hover:-translate-y-1 shadow-lg hover:shadow-accent-green/30 group/btn">
@@ -328,9 +539,10 @@
                                     </div>
                                     <div class="text-right">
                                         <p class="text-slate-500 text-[10px] uppercase tracking-widest mb-1">Puntos
-                                            Esperados</p>
-                                        <p class="text-accent-green text-3xl font-display font-bold text-glow-pl">84 pts
-                                        </p>
+                                            Esperados (xP)</p>
+                                        <p class="text-accent-green text-3xl font-display font-bold text-glow-pl">84.2
+                                            pts</p>
+                                        <p class="xp-confidence">± 4.1 pts · confianza 91%</p>
                                     </div>
                                 </div>
 
@@ -350,57 +562,71 @@
                                         </div>
                                     </div>
 
+                                    <!-- xP / Ownership Toggle -->
+                                    <div class="flex justify-center gap-2 mb-3 relative z-20">
+                                        <span class="metric-badge active" id="toggle-xp"
+                                            onclick="switchMetric('xp')">xP</span>
+                                        <span class="metric-badge inactive" id="toggle-own"
+                                            onclick="switchMetric('own')">Ownership %</span>
+                                    </div>
                                     <!-- Players -->
                                     <div class="flex justify-center gap-12 relative z-10">
                                         <div class="flex flex-col items-center gap-1.5">
                                             <div
-                                                class="w-12 h-12 rounded-full bg-slate-800 border-2 border-accent-green flex items-center justify-center relative shadow-xl transform hover:scale-110 transition-transform">
+                                                class="w-12 h-12 rounded-full bg-slate-800 border-2 player-easy flex items-center justify-center relative shadow-xl transform hover:scale-110 transition-transform">
                                                 <span class="text-white text-xs font-bold">HA</span>
                                                 <div
                                                     class="absolute -top-2 -right-2 bg-accent-green text-primary text-[10px] font-black px-1.5 py-0.5 rounded-full">
                                                     C</div>
                                             </div>
-                                            <div
-                                                class="bg-black/60 backdrop-blur-sm px-2 py-0.5 rounded text-[10px] text-accent-green font-bold">
-                                                12.4</div>
+                                            <div class="bg-black/60 backdrop-blur-sm px-2 py-0.5 rounded text-[10px] text-accent-green font-bold metric-val"
+                                                data-xp="12.4" data-own="82%">12.4</div>
                                         </div>
                                         <div class="flex flex-col items-center gap-1.5">
                                             <div
-                                                class="w-12 h-12 rounded-full bg-slate-800 border-2 border-white/20 flex items-center justify-center shadow-xl transform hover:scale-110 transition-transform">
+                                                class="w-12 h-12 rounded-full bg-slate-800 border-2 player-medium flex items-center justify-center shadow-xl transform hover:scale-110 transition-transform">
                                                 <span class="text-white text-xs font-bold">WA</span>
                                             </div>
-                                            <div
-                                                class="bg-black/60 backdrop-blur-sm px-2 py-0.5 rounded text-[10px] text-white">
-                                                6.2</div>
+                                            <div class="bg-black/60 backdrop-blur-sm px-2 py-0.5 rounded text-[10px] text-white metric-val"
+                                                data-xp="6.2" data-own="38%">6.2</div>
                                         </div>
                                     </div>
 
                                     <div class="flex justify-center gap-8 relative z-10">
                                         <div
-                                            class="w-10 h-10 rounded-full bg-slate-800 border-2 border-white/20 flex items-center justify-center opacity-70">
+                                            class="w-10 h-10 rounded-full bg-slate-800 border-2 border-white/20 flex items-center justify-center opacity-50">
                                         </div>
                                         <div class="flex flex-col items-center gap-1.5">
                                             <div
-                                                class="w-12 h-12 rounded-full bg-slate-800 border-2 border-accent-cyan/60 flex items-center justify-center relative shadow-xl transform hover:scale-110 transition-transform">
+                                                class="w-12 h-12 rounded-full bg-slate-800 border-2 player-easy flex items-center justify-center relative shadow-xl transform hover:scale-110 transition-transform">
                                                 <span class="text-white text-xs font-bold">SA</span>
                                                 <div
                                                     class="absolute -top-2 -right-2 bg-white text-primary text-[10px] font-black px-1.5 py-0.5 rounded-full">
                                                     V</div>
                                             </div>
-                                            <div
-                                                class="bg-black/60 backdrop-blur-sm px-2 py-0.5 rounded text-[10px] text-white text-glow-pl">
-                                                9.5</div>
+                                            <div class="bg-black/60 backdrop-blur-sm px-2 py-0.5 rounded text-[10px] text-white text-glow-pl metric-val"
+                                                data-xp="9.5" data-own="61%">9.5</div>
                                         </div>
                                         <div
-                                            class="w-10 h-10 rounded-full bg-slate-800 border-2 border-white/20 flex items-center justify-center opacity-70">
+                                            class="w-10 h-10 rounded-full bg-slate-800 border-2 border-white/20 flex items-center justify-center opacity-50">
                                         </div>
                                     </div>
 
                                     <div class="flex justify-center relative z-10">
                                         <div
-                                            class="w-12 h-12 rounded-full bg-secondary/20 border-2 border-secondary flex items-center justify-center shadow-xl">
+                                            class="w-12 h-12 rounded-full bg-secondary/20 border-2 player-hard flex items-center justify-center shadow-xl">
                                             <span class="text-secondary text-xs font-bold">RA</span>
                                         </div>
+                                        <!-- Pitch Legend -->
+                                    </div>
+                                    <!-- Fixture Difficulty Legend -->
+                                    <div class="flex justify-center gap-4 mt-2 relative z-10">
+                                        <span class="flex items-center gap-1 text-[9px] text-slate-500"><span
+                                                class="w-2 h-2 rounded-full bg-accent-green inline-block"></span>Fácil</span>
+                                        <span class="flex items-center gap-1 text-[9px] text-slate-500"><span
+                                                class="w-2 h-2 rounded-full bg-accent-cyan inline-block"></span>Medio</span>
+                                        <span class="flex items-center gap-1 text-[9px] text-slate-500"><span
+                                                class="w-2 h-2 rounded-full bg-secondary inline-block"></span>Difícil</span>
                                     </div>
                                 </div>
                             </div>
@@ -419,41 +645,223 @@
                         <p class="text-slate-400 max-w-2xl mx-auto text-lg lowercase first-letter:uppercase">Desbloquea
                             el poder de la IA para tomar mejores decisiones cada jornada.</p>
                     </div>
-                    <div class="grid md:grid-cols-3 gap-8">
-                        <div
-                            class="feature-card group relative overflow-hidden rounded-2xl bg-surface border border-white/5 hover:border-accent-green/40 transition-all p-8">
-                            <div class="shimmer"></div>
-                            <div
-                                class="w-14 h-14 rounded-xl bg-accent-green/10 flex items-center justify-center mb-8 text-accent-green border border-accent-green/20">
-                                <span class="material-symbols-outlined text-3xl">monitoring</span>
+                    <!-- 3D Feature Cards Grid -->
+                    <div class="grid md:grid-cols-3 gap-8 items-start" id="feat-grid">
+
+                        <!-- ── Card 1: Predictive Points ── -->
+                        <div class="feat-3d-wrap" data-color="#00FF85">
+                            <div class="feat-3d-card" id="fc-1">
+                                <div class="feat-holo"></div>
+                                <div class="feat-corner-glow"
+                                    style="background:radial-gradient(circle at 0% 0%, rgba(0,255,133,0.25) 0%, transparent 60%);">
+                                </div>
+                                <div class="feat-orb"
+                                    style="width:80px;height:80px;top:-20px;right:-20px;background:radial-gradient(circle, rgba(0,255,133,0.18) 0%,transparent 70%);">
+                                </div>
+                                <div class="feat-orb feat-orb-2"
+                                    style="width:50px;height:50px;bottom:30px;right:20px;background:radial-gradient(circle, rgba(0,255,133,0.1) 0%,transparent 70%);">
+                                </div>
+                                <div class="feat-icon-wrap">
+                                    <span class="material-symbols-outlined text-3xl"
+                                        style="color:#00FF85">monitoring</span>
+                                    <div class="feat-icon-ring" style="border-color:rgba(0,255,133,0.4)"></div>
+                                </div>
+                                <div class="feat-chip feat-chip-green">AI · xP MODEL</div>
+                                <h3 class="feat-title">Puntos Predictivos<br><span style="color:#00FF85">con IA</span>
+                                </h3>
+                                <p class="feat-desc">Proyecciones con intervalos de confianza estadística — xG, xA,
+                                    fixture difficulty y forma reciente.</p>
+                                <div class="feat-chart-wrap">
+                                    <svg viewBox="0 0 160 120" class="feat-svg" fill="none">
+                                        <polygon points="80,10 142,45 142,90 80,110 18,90 18,45" fill="none"
+                                            stroke="rgba(0,255,133,0.08)" stroke-width="1" />
+                                        <polygon points="80,25 128,52 128,80 80,95 32,80 32,52" fill="none"
+                                            stroke="rgba(0,255,133,0.08)" stroke-width="1" />
+                                        <polygon points="80,40 114,58 114,72 80,82 46,72 46,58" fill="none"
+                                            stroke="rgba(0,255,133,0.08)" stroke-width="1" />
+                                        <line x1="80" y1="10" x2="80" y2="110" stroke="rgba(0,255,133,0.05)"
+                                            stroke-width="1" />
+                                        <line x1="18" y1="45" x2="142" y2="90" stroke="rgba(0,255,133,0.05)"
+                                            stroke-width="1" />
+                                        <line x1="142" y1="45" x2="18" y2="90" stroke="rgba(0,255,133,0.05)"
+                                            stroke-width="1" />
+                                        <polygon class="feat-radar-fill" points="80,18 134,52 130,84 80,100 28,82 26,50"
+                                            fill="rgba(0,255,133,0.12)" stroke="#00FF85" stroke-width="1.5"
+                                            stroke-linejoin="round" />
+                                        <circle cx="80" cy="18" r="3" fill="#00FF85" class="feat-radar-dot" />
+                                        <circle cx="134" cy="52" r="3" fill="#00FF85" class="feat-radar-dot" />
+                                        <circle cx="130" cy="84" r="3" fill="#04F5FF" class="feat-radar-dot" />
+                                        <circle cx="80" cy="100" r="3" fill="#00FF85" class="feat-radar-dot" />
+                                        <circle cx="28" cy="82" r="3" fill="#04F5FF" class="feat-radar-dot" />
+                                        <circle cx="26" cy="50" r="3" fill="#00FF85" class="feat-radar-dot" />
+                                        <text x="80" y="8" text-anchor="middle" font-size="7" fill="rgba(0,255,133,0.7)"
+                                            font-family="monospace">xG</text>
+                                        <text x="148" y="50" font-size="7" fill="rgba(148,163,184,0.6)"
+                                            font-family="monospace">xA</text>
+                                        <text x="148" y="90" font-size="7" fill="rgba(148,163,184,0.6)"
+                                            font-family="monospace">FDR</text>
+                                        <text x="66" y="116" font-size="7" fill="rgba(148,163,184,0.6)"
+                                            font-family="monospace">Form</text>
+                                        <text x="2" y="90" font-size="7" fill="rgba(148,163,184,0.6)"
+                                            font-family="monospace">CS%</text>
+                                        <text x="2" y="50" font-size="7" fill="rgba(148,163,184,0.6)"
+                                            font-family="monospace">Mins</text>
+                                        <text x="80" y="60" text-anchor="middle" font-size="13" font-weight="bold"
+                                            fill="#00FF85" font-family="monospace">12.4</text>
+                                        <text x="80" y="70" text-anchor="middle" font-size="6"
+                                            fill="rgba(0,255,133,0.5)" font-family="monospace">xP ±1.8</text>
+                                    </svg>
+                                </div>
+                                <div class="feat-stat-row">
+                                    <div class="feat-stat"><span class="feat-stat-val"
+                                            style="color:#00FF85">98%</span><span class="feat-stat-lbl">Precisión</span>
+                                    </div>
+                                    <div class="feat-stat-divider"></div>
+                                    <div class="feat-stat"><span class="feat-stat-val"
+                                            style="color:#04F5FF">2.5M</span><span class="feat-stat-lbl">Sims</span>
+                                    </div>
+                                    <div class="feat-stat-divider"></div>
+                                    <div class="feat-stat"><span class="feat-stat-val"
+                                            style="color:#00FF85">6</span><span class="feat-stat-lbl">Variables</span>
+                                    </div>
+                                </div>
                             </div>
-                            <h3 class="text-xl font-display font-bold text-white mb-4">Puntos Predictivos IA</h3>
-                            <p class="text-slate-400 leading-relaxed">Proyecciones precisas para cada jugador basadas en
-                                forma, dificultad de fixture y datos avanzados de xG.</p>
                         </div>
-                        <div
-                            class="feature-card group relative overflow-hidden rounded-2xl bg-surface border border-white/5 hover:border-secondary/40 transition-all p-8">
-                            <div class="shimmer"></div>
-                            <div
-                                class="w-14 h-14 rounded-xl bg-secondary/10 flex items-center justify-center mb-8 text-secondary border border-secondary/20">
-                                <span class="material-symbols-outlined text-3xl">compare_arrows</span>
+
+                        <!-- ── Card 2: Optimal Transfers ── -->
+                        <div class="feat-3d-wrap" data-color="#E90052" style="margin-top:2rem">
+                            <div class="feat-3d-card feat-3d-card--pink" id="fc-2">
+                                <div class="feat-holo feat-holo--pink"></div>
+                                <div class="feat-corner-glow"
+                                    style="background:radial-gradient(circle at 100% 0%, rgba(233,0,82,0.22) 0%, transparent 60%);">
+                                </div>
+                                <div class="feat-orb"
+                                    style="width:100px;height:100px;bottom:-30px;left:-30px;background:radial-gradient(circle, rgba(233,0,82,0.15) 0%,transparent 70%);">
+                                </div>
+                                <div class="feat-featured-badge">⚡ ESTRELLA</div>
+                                <div class="feat-icon-wrap">
+                                    <span class="material-symbols-outlined text-3xl"
+                                        style="color:#E90052">compare_arrows</span>
+                                    <div class="feat-icon-ring" style="border-color:rgba(233,0,82,0.4)"></div>
+                                </div>
+                                <div class="feat-chip"
+                                    style="background:rgba(233,0,82,0.12);border-color:rgba(233,0,82,0.3);color:#E90052">
+                                    SOLVER · 5GW</div>
+                                <h3 class="feat-title">Transferencias<br><span style="color:#E90052">Óptimas</span></h3>
+                                <p class="feat-desc">El solver evalúa estrategias a 5 jornadas contemplando hits, chips
+                                    diferidos y valor de mercado.</p>
+                                <div class="feat-chart-wrap">
+                                    <svg viewBox="0 0 160 90" class="feat-svg" fill="none">
+                                        <line x1="0" y1="22" x2="160" y2="22" stroke="rgba(255,255,255,0.04)"
+                                            stroke-width="1" />
+                                        <line x1="0" y1="44" x2="160" y2="44" stroke="rgba(255,255,255,0.04)"
+                                            stroke-width="1" />
+                                        <line x1="0" y1="66" x2="160" y2="66" stroke="rgba(255,255,255,0.04)"
+                                            stroke-width="1" />
+                                        <text x="0" y="88" font-size="7" fill="rgba(148,163,184,0.4)"
+                                            font-family="monospace">GW26</text>
+                                        <text x="52" y="88" font-size="7" fill="rgba(148,163,184,0.4)"
+                                            font-family="monospace">GW28</text>
+                                        <text x="108" y="88" font-size="7" fill="rgba(148,163,184,0.4)"
+                                            font-family="monospace">GW30</text>
+                                        <path d="M0,65 C30,62 60,60 80,58 C110,55 130,53 160,52"
+                                            stroke="rgba(255,255,255,0.2)" stroke-width="1.5" stroke-dasharray="5,3" />
+                                        <path d="M0,65 C20,55 40,38 70,25 C100,12 130,8 160,5 L160,85 L0,85 Z"
+                                            fill="rgba(233,0,82,0.08)" />
+                                        <path class="feat-line-anim" d="M0,65 C20,55 40,38 70,25 C100,12 130,8 160,5"
+                                            stroke="#E90052" stroke-width="2.5" stroke-linecap="round" />
+                                        <line x1="130" y1="8" x2="130" y2="52" stroke="rgba(0,255,133,0.5)"
+                                            stroke-width="1" stroke-dasharray="2,2" />
+                                        <polygon points="130,5 127,10 133,10" fill="#00FF85" />
+                                        <text x="134" y="32" font-size="7" fill="#00FF85"
+                                            font-family="monospace">+18.4</text>
+                                        <text x="134" y="40" font-size="6" fill="rgba(0,255,133,0.6)"
+                                            font-family="monospace">xP gain</text>
+                                        <circle cx="70" cy="25" r="4" fill="#E90052" />
+                                        <circle cx="70" cy="25" r="7" fill="none" stroke="rgba(233,0,82,0.3)"
+                                            stroke-width="1" />
+                                        <text x="55" y="19" font-size="6" fill="rgba(233,0,82,0.8)"
+                                            font-family="monospace">Palmer IN</text>
+                                    </svg>
+                                </div>
+                                <div class="feat-stat-row">
+                                    <div class="feat-stat"><span class="feat-stat-val" style="color:#E90052">5
+                                            GW</span><span class="feat-stat-lbl">Horizonte</span></div>
+                                    <div class="feat-stat-divider"></div>
+                                    <div class="feat-stat"><span class="feat-stat-val"
+                                            style="color:#00FF85">+18.4</span><span class="feat-stat-lbl">xP Win</span>
+                                    </div>
+                                    <div class="feat-stat-divider"></div>
+                                    <div class="feat-stat"><span class="feat-stat-val"
+                                            style="color:#04F5FF">£6.7m</span><span class="feat-stat-lbl">Budget</span>
+                                    </div>
+                                </div>
                             </div>
-                            <h3 class="text-xl font-display font-bold text-white mb-4">Transferencias Óptimas</h3>
-                            <p class="text-slate-400 leading-relaxed">Sugerencias impulsadas por algoritmos para
-                                maximizar tu presupuesto y potencial de puntos a 5 jornadas.</p>
                         </div>
-                        <div
-                            class="feature-card group relative overflow-hidden rounded-2xl bg-surface border border-white/5 hover:border-accent-cyan/40 transition-all p-8">
-                            <div class="shimmer"></div>
-                            <div
-                                class="w-14 h-14 rounded-xl bg-accent-cyan/10 flex items-center justify-center mb-8 text-accent-cyan border border-accent-cyan/20">
-                                <span class="material-symbols-outlined text-3xl">military_tech</span>
+
+                        <!-- ── Card 3: Elite Captains ── -->
+                        <div class="feat-3d-wrap" data-color="#04F5FF">
+                            <div class="feat-3d-card feat-3d-card--cyan" id="fc-3">
+                                <div class="feat-holo feat-holo--cyan"></div>
+                                <div class="feat-corner-glow"
+                                    style="background:radial-gradient(circle at 0% 100%, rgba(4,245,255,0.2) 0%, transparent 60%);">
+                                </div>
+                                <div class="feat-orb"
+                                    style="width:70px;height:70px;top:-15px;left:-15px;background:radial-gradient(circle, rgba(4,245,255,0.15) 0%,transparent 70%);">
+                                </div>
+                                <div class="feat-icon-wrap">
+                                    <span class="material-symbols-outlined text-3xl"
+                                        style="color:#04F5FF">military_tech</span>
+                                    <div class="feat-icon-ring" style="border-color:rgba(4,245,255,0.4)"></div>
+                                </div>
+                                <div class="feat-chip"
+                                    style="background:rgba(4,245,255,0.10);border-color:rgba(4,245,255,0.3);color:#04F5FF">
+                                    CAPTAIN · AI PICK</div>
+                                <h3 class="feat-title">Capitanes<br><span style="color:#04F5FF">de Élite</span></h3>
+                                <p class="feat-desc">Capitán y vice óptimos según probabilidades de haul. Nunca pierdas
+                                    los puntos dobles clave.</p>
+                                <div class="feat-chart-wrap">
+                                    <svg viewBox="0 0 160 105" class="feat-svg" fill="none">
+                                        <circle cx="80" cy="50" r="38" stroke="rgba(255,255,255,0.05)"
+                                            stroke-width="8" />
+                                        <circle cx="80" cy="50" r="38" stroke="#04F5FF" stroke-width="8"
+                                            stroke-dasharray="90.7 238.76" stroke-dashoffset="59.7"
+                                            stroke-linecap="round" class="feat-arc" />
+                                        <circle cx="80" cy="50" r="38" stroke="#00FF85" stroke-width="8"
+                                            stroke-dasharray="57.3 238.76" stroke-dashoffset="-31.0"
+                                            stroke-linecap="round" class="feat-arc" style="animation-delay:0.3s" />
+                                        <circle cx="80" cy="50" r="38" stroke="#E90052" stroke-width="8"
+                                            stroke-dasharray="50.1 238.76" stroke-dashoffset="-88.2"
+                                            stroke-linecap="round" class="feat-arc" style="animation-delay:0.6s" />
+                                        <text x="80" y="47" text-anchor="middle" font-size="16" font-weight="bold"
+                                            fill="#04F5FF" font-family="monospace">38%</text>
+                                        <text x="80" y="59" text-anchor="middle" font-size="7"
+                                            fill="rgba(148,163,184,0.7)" font-family="monospace">Haaland C</text>
+                                        <rect x="5" y="94" width="7" height="7" rx="2" fill="#04F5FF" />
+                                        <text x="15" y="101" font-size="7" fill="rgba(148,163,184,0.8)"
+                                            font-family="monospace">Haaland 38%</text>
+                                        <rect x="82" y="94" width="7" height="7" rx="2" fill="#00FF85" />
+                                        <text x="92" y="101" font-size="7" fill="rgba(148,163,184,0.8)"
+                                            font-family="monospace">Palmer 24%</text>
+                                    </svg>
+                                </div>
+                                <div class="feat-stat-row">
+                                    <div class="feat-stat"><span class="feat-stat-val"
+                                            style="color:#04F5FF">38%</span><span class="feat-stat-lbl">Haul
+                                            Prob.</span></div>
+                                    <div class="feat-stat-divider"></div>
+                                    <div class="feat-stat"><span class="feat-stat-val"
+                                            style="color:#00FF85">C+V</span><span class="feat-stat-lbl">Pick</span>
+                                    </div>
+                                    <div class="feat-stat-divider"></div>
+                                    <div class="feat-stat"><span class="feat-stat-val"
+                                            style="color:#04F5FF">GW26</span><span class="feat-stat-lbl">Live</span>
+                                    </div>
+                                </div>
                             </div>
-                            <h3 class="text-xl font-display font-bold text-white mb-4">Capitanes de Élite</h3>
-                            <p class="text-slate-400 leading-relaxed">Selecciones de capitán basadas en datos para
-                                asegurar que nunca pierdas los puntos dobles clave.</p>
                         </div>
                     </div>
+
 
                     <!-- Stats -->
                     <div class="mt-20 grid grid-cols-2 md:grid-cols-4 gap-4 p-8 rounded-2xl glass-panel border-white/5">
@@ -599,9 +1007,11 @@
                                 <line x1="0" y1="75" x2="1000" y2="75" stroke="rgba(255,255,255,0.05)" stroke-width="1">
                                 </line>
                                 <line x1="0" y1="150" x2="1000" y2="150" stroke="rgba(255,255,255,0.05)"
-                                    stroke-width="1"></line>
+                                    stroke-width="1">
+                                </line>
                                 <line x1="0" y1="225" x2="1000" y2="225" stroke="rgba(255,255,255,0.05)"
-                                    stroke-width="1"></line>
+                                    stroke-width="1">
+                                </line>
 
                                 <!-- Average Line -->
                                 <path class="opacity-30"
@@ -612,6 +1022,11 @@
                                 <path
                                     d="M0,200 C100,180 200,150 300,120 C400,90 500,100 600,60 C700,20 800,80 900,40 L1000,20 L1000,300 L0,300 Z"
                                     fill="url(#glowGradient)"></path>
+
+                                <!-- Confidence Band (± band around AI line) -->
+                                <path class="chart-confidence-band" id="confidence-band"
+                                    d="M0,185 C100,163 200,133 300,103 C400,73 500,83 600,43 C700,3 800,63 900,23 L1000,3
+                                       L1000,37 C900,57 800,97 700,37 C600,77 500,117 400,107 C300,137 200,167 100,197 Z" fill="rgba(0,255,133,0.07)" stroke="none"></path>
 
                                 <!-- AI Line -->
                                 <path class="chart-line"

@@ -351,3 +351,125 @@ function onYouTubeIframeAPIReady() {
         }
     });
 }
+
+// ─── AI Simulation Console Typewriter ───────────────────────────────────────
+(function initConsole() {
+    const lines = document.querySelectorAll('.ai-console .console-line');
+    if (!lines.length) return;
+    lines.forEach(l => { l.style.opacity = '0'; l.style.transition = 'opacity 0.4s'; });
+
+    function revealLine(i) {
+        if (i >= lines.length) return;
+        lines[i].style.opacity = lines[i].classList.contains('highlight') ? '1' : '0.7';
+        setTimeout(() => revealLine(i + 1), 600);
+    }
+
+    const consoleEl = document.querySelector('.ai-console');
+    if (!consoleEl) return;
+    const obs = new IntersectionObserver(entries => {
+        if (entries[0].isIntersecting) { setTimeout(() => revealLine(0), 300); obs.disconnect(); }
+    }, { threshold: 0.1 });
+    obs.observe(consoleEl);
+    setInterval(() => {
+        lines.forEach(l => { l.style.opacity = '0'; });
+        setTimeout(() => revealLine(0), 400);
+    }, 8000);
+}());
+
+// ─── Mini-Bar Scroll Reveal ──────────────────────────────────────────────────
+(function initMiniBars() {
+    const fills = document.querySelectorAll('.mini-bar-fill');
+    if (!fills.length) return;
+    fills.forEach(fill => {
+        const w = parseFloat(fill.style.getPropertyValue('--w') || 0);
+        fill.style.width = (w * 100) + '%';
+    });
+    const barObs = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.querySelectorAll('.mini-bar-fill').forEach(bar => bar.classList.add('active'));
+                barObs.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.3 });
+    document.querySelectorAll('.feature-bars').forEach(wrap => barObs.observe(wrap));
+}());
+
+// ─── xP / Ownership Metric Toggle ───────────────────────────────────────────
+function switchMetric(mode) {
+    const toggleXP  = document.getElementById('toggle-xp');
+    const toggleOwn = document.getElementById('toggle-own');
+    const vals      = document.querySelectorAll('.metric-val');
+    if (!toggleXP) return;
+    if (mode === 'xp') {
+        toggleXP.classList.replace('inactive', 'active');
+        toggleOwn.classList.replace('active', 'inactive');
+        vals.forEach(v => { v.textContent = v.dataset.xp || v.textContent; });
+    } else {
+        toggleOwn.classList.replace('inactive', 'active');
+        toggleXP.classList.replace('active', 'inactive');
+        vals.forEach(v => { v.textContent = v.dataset.own || v.textContent; });
+    }
+}
+
+// ─── Confidence Band Chart Activation ───────────────────────────────────────
+(function initConfidenceBand() {
+    const band = document.getElementById('confidence-band');
+    if (!band) return;
+    const chartObs = new IntersectionObserver(entries => {
+        if (entries[0].isIntersecting) { band.classList.add('active'); chartObs.disconnect(); }
+    }, { threshold: 0.2 });
+    const statsSection = document.getElementById('stats');
+    if (statsSection) chartObs.observe(statsSection);
+}());
+
+// ─── 3D Feature Cards — Mouse Tilt Interaction ──────────────────────────────
+(function init3DCards() {
+    const cards = document.querySelectorAll('.feat-3d-card');
+    if (!cards.length) return;
+
+    cards.forEach(card => {
+        const wrap = card.closest('.feat-3d-wrap');
+        const color = wrap ? wrap.dataset.color || '#00FF85' : '#00FF85';
+
+        card.addEventListener('mousemove', e => {
+            const rect = card.getBoundingClientRect();
+            const cx = rect.left + rect.width  / 2;
+            const cy = rect.top  + rect.height / 2;
+            const dx = (e.clientX - cx) / (rect.width  / 2);
+            const dy = (e.clientY - cy) / (rect.height / 2);
+
+            const rotX = -dy * 10;   // degrees
+            const rotY =  dx * 10;
+            const shine = `radial-gradient(circle at ${(dx + 1) * 50}% ${(dy + 1) * 50}%, rgba(255,255,255,0.06) 0%, transparent 60%)`;
+
+            card.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg) translateZ(8px)`;
+            card.style.boxShadow = `${-rotY * 2}px ${rotX * 2}px 40px rgba(0,0,0,0.5), 0 0 30px ${color}18`;
+            const holo = card.querySelector('.feat-holo');
+            if (holo) holo.style.backgroundImage = shine;
+        });
+
+        card.addEventListener('mouseleave', () => {
+            card.style.transform  = '';
+            card.style.boxShadow  = '';
+            const holo = card.querySelector('.feat-holo');
+            if (holo) holo.style.backgroundImage = '';
+        });
+    });
+
+    // Trigger SVG arc & line animations when section scrolls into view
+    const featSection = document.getElementById('feat-grid');
+    if (!featSection) return;
+    const featObs = new IntersectionObserver(entries => {
+        if (entries[0].isIntersecting) {
+            // Reset and re-trigger CSS animations by toggling class
+            document.querySelectorAll('.feat-line-anim, .feat-arc').forEach(el => {
+                el.style.animationName = 'none';
+                void el.offsetWidth; // reflow
+                el.style.animationName = '';
+            });
+            featObs.disconnect();
+        }
+    }, { threshold: 0.15 });
+    featObs.observe(featSection);
+}());
