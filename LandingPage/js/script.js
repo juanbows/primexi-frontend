@@ -59,6 +59,104 @@ document.addEventListener('DOMContentLoaded', () => {
 
         animatedObserver.observe(section);
     });
+
+    // --- Interactive Features Section Logic ---
+    const featuresSection = document.getElementById('features');
+    const featureCards = document.querySelectorAll('.feature-card');
+
+    if (featuresSection) {
+        featuresSection.addEventListener('mousemove', (e) => {
+            const rects = featuresSection.getBoundingClientRect();
+            const x = e.clientX - rects.left;
+            const y = e.clientY - rects.top;
+
+            // Actualizar luz global del fondo
+            featuresSection.style.setProperty('--bg-glow-x', `${x}px`);
+            featuresSection.style.setProperty('--bg-glow-y', `${y}px`);
+
+            // Efecto de Parallax sutil en las cards
+            featureCards.forEach(card => {
+                const cardRect = card.getBoundingClientRect();
+                const cardX = e.clientX - cardRect.left;
+                const cardY = e.clientY - cardRect.top;
+
+                // Variables para el brillo interno de la card
+                card.style.setProperty('--mouse-x', `${cardX}px`);
+                card.style.setProperty('--mouse-y', `${cardY}px`);
+            });
+        });
+
+        // Oscilación de valores "LIVE"
+        const liveValues = document.querySelectorAll('.live-value');
+        setInterval(() => {
+            liveValues.forEach(el => {
+                const baseValue = parseFloat(el.getAttribute('data-value'));
+                const step = parseFloat(el.getAttribute('data-step') || 0.01);
+                const jitter = (Math.random() - 0.5) * step * 2;
+                const newValue = (baseValue + jitter).toFixed(step < 0.1 ? 2 : 1);
+                el.innerText = newValue;
+            });
+        }, 1500);
+
+        // Activación de elementos al hacer scroll
+        const chartPath = document.querySelector('.chart-path');
+        const rankProgress = document.getElementById('rank-progress');
+
+        const intersectionObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    if (entry.target.classList.contains('chart-path')) {
+                        entry.target.classList.add('active');
+                        // Activar puntos de la gráfica secuencialmente
+                        document.querySelectorAll('.chart-point').forEach((pt, i) => {
+                            setTimeout(() => pt.classList.add('active'), 500 + (i * 300));
+                        });
+                    }
+                    if (entry.target.id === 'rank-progress') {
+                        entry.target.style.width = '45.2%';
+                    }
+                }
+            });
+        }, { threshold: 0.2 });
+
+        if (chartPath) intersectionObserver.observe(chartPath);
+        if (rankProgress) intersectionObserver.observe(rankProgress);
+
+        // Radar Chart Animation
+        const radarPoints = document.getElementById('radar-points');
+        const radarObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    radarPoints.setAttribute('points', '100,30 165,70 140,155 60,155 35,70');
+                }
+            });
+        }, { threshold: 0.5 });
+        if (radarPoints) radarObserver.observe(radarPoints);
+
+        // --- War Room Mouse Glow ---
+        const warRoomSection = document.getElementById('war-room');
+        if (warRoomSection) {
+            warRoomSection.addEventListener('mousemove', (e) => {
+                const rect = warRoomSection.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                warRoomSection.style.setProperty('--mouse-x', `${x}px`);
+                warRoomSection.style.setProperty('--mouse-y', `${y}px`);
+            });
+        }
+
+
+        // Soporte para Mobile (Touch)
+        featuresSection.addEventListener('touchstart', (e) => {
+            const touch = e.touches[0];
+            const rects = featuresSection.getBoundingClientRect();
+            const x = touch.clientX - rects.left;
+            const y = touch.clientY - rects.top;
+
+            featuresSection.style.setProperty('--bg-glow-x', `${x}px`);
+            featuresSection.style.setProperty('--bg-glow-y', `${y}px`);
+        }, { passive: true });
+    }
 });
 
 // YouTube API for playback speed
