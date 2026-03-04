@@ -18,7 +18,8 @@
 - [x] Conexión con API FPL (Bootstrap Static)
 - [x] Diseño de esquema relacional en Supabase
 - [x] Migración de tablas (Elements, Teams, Fixtures, etc.)
-- [ ] Script de Ingesta Automática (Sync API -> DB)
+- [x] Script de Ingesta Automática (Sync API -> DB)
+- [x] Sincronización de Historial (22,000+ registros)
 
 ## Fase 6: Inteligencia y Dashboard
 - [ ] Desarrollo de Algoritmo de Optimización (Once Ideal)
