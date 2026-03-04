@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html class="dark" lang="es">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>PRIME XI - Optimizador de IA para Fantasy Premier League</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+    <!-- Three.js r165 via importmap (ES Module) -->
+    <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.165.0/build/three.module.js"
+      }
+    }
+    </script>
+
+    <!-- Theme Configuration -->
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#3D195B",      /* PL Purple */
+                        "secondary": "#E90052",    /* PL Pink */
+                        "accent-green": "#00FF85",  /* PL Neon Green */
+                        "accent-cyan": "#04F5FF",   /* PL Cyan */
+                        "pl-dark": "#020617",       /* Very Dark Navy */
+                        "surface": "#120214",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"],
+                        "body": ["Inter", "sans-serif"]
+                    },
+                    backgroundImage: {
+                        'hero-pattern': "url('https://images.unsplash.com/photo-1574629810360-7efbbe195018?q=80&w=2836&auto=format&fit=crop')",
+                        'grid-pattern': "linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px)",
+                    }
+                },
+            },
+        }
+    </script>
+
+    <style>
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #020617;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #3D195B;
+            border-radius: 4px;
+            border: 1px solid rgba(0, 255, 133, 0.2);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00FF85;
+        }
+
+        .glass-panel {
+            background: rgba(61, 25, 91, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .text-glow-pl {
+            text-shadow: 0 0 15px rgba(0, 255, 133, 0.4);
+        }
+
+        .text-glow-pink {
+            text-shadow: 0 0 15px rgba(233, 0, 82, 0.4);
+        }
+
+        .hero-gradient {
+            background: linear-gradient(180deg, rgba(61, 25, 91, 0.85) 0%, rgba(2, 6, 23, 0.95) 100%);
+        }
+
+        .pitch-gradient {
+            background: linear-gradient(to bottom, #113b1a, #020617);
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .animate-float {
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .chart-line {
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: dash 3s ease-in-out forwards;
+        }
+
+        @keyframes dash {
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+
+        details>summary {
+            list-style: none;
+        }
+
+        .video-background {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100vw;
+            height: 100vh;
+            transform: translate(-50%, -50%);
+            object-fit: cover;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        @media (min-aspect-ratio: 16/9) {
+            .video-background {
+                height: 56.25vw;
+            }
+        }
+
+        @media (max-aspect-ratio: 16/9) {
+            .video-background {
+                width: 177.78vh;
+            }
+        }
+
+        .hero-video-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(2, 6, 23, 0.4) 0%, rgba(2, 6, 23, 0.9) 100%);
+            z-index: 0;
+        }
+    </style>
+</head>
+
+<body class="bg-pl-dark text-slate-100 font-body overflow-x-hidden selection:bg-accent-green selection:text-primary">
+
+    <div class="relative flex min-h-screen w-full flex-col">
+
+        <!-- Navigation -->
+        <header
+            class="fixed top-0 w-full z-50 glass-panel border-b border-white/5 px-6 py-4 transition-all duration-300">
+            <div class="mx-auto max-w-7xl flex items-center justify-between">
+                <a href="/" class="flex items-center gap-4 group">
+                    <div class="relative flex items-center justify-center">
+                        <!-- High-Detail Monstrous Kraken SVG -->
+                        <!-- Advanced Monstrous Kraken SVG -->
+                        <svg class="w-12 h-12 transform transition-all duration-500 group-hover:scale-110"
+                            viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Background Tentacles (Thick/Curved) -->
+                            <path d="M10 50C5 60 5 80 15 90M90 50C95 60 95 80 85 90" stroke="#00FF85" stroke-width="4"
+                                stroke-linecap="round" opacity="0.3" />
+                            <!-- Main Hood -->
+                            <path d="M50 2L25 28L25 55C25 70 35 82 50 88C65 82 75 70 75 55L75 28L50 2Z" fill="#1A0B2E"
+                                stroke="#00FF85" stroke-width="3" />
+                            <path d="M50 2L35 25V48L50 58L65 48V25L50 2Z" fill="#3D195B" opacity="0.5" />
+                            <!-- Sharp Eyes -->
+                            <path d="M34 38L46 44L44 48L32 46L34 38Z" fill="#00FF85" class="animate-pulse" />
+                            <path d="M66 38L54 44L56 48L68 46L66 38Z" fill="#00FF85" class="animate-pulse" />
+                            <!-- Primary Tentacles (Thick/Curved) -->
+                            <path d="M25 55C15 65 10 85 25 95M75 55C85 65 90 85 75 95" stroke="#00FF85" stroke-width="4"
+                                stroke-linecap="round" />
+                            <path d="M40 85C35 90 30 98 40 100M60 85C65 90 70 98 60 100" stroke="#00FF85"
+                                stroke-width="4" stroke-linecap="round" />
+                        </svg>
+                        <div
+                            class="absolute inset-0 bg-accent-green/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity">
+                        </div>
+                    </div>
+                    <span class="text-white text-2xl font-display font-black tracking-tighter leading-none">PRIME<span
+                            class="text-accent-green">XI</span></span>
+                </a>
+                <nav class="hidden md:flex items-center gap-8">
+                    <a class="text-slate-400 hover:text-accent-green text-sm font-medium transition-colors"
+                        href="#ball-station">Análisis</a>
+                    <a class="text-slate-400 hover:text-accent-green text-sm font-medium transition-colors"
+                        href="#features">Funciones</a>
+                    <a class="text-slate-400 hover:text-accent-green text-sm font-medium transition-colors"
+                        href="#protocol">Protocolo</a>
+                    <a class="text-slate-400 hover:text-accent-green text-sm font-medium transition-colors"
+                        href="#war-room">Elite Access</a>
+                </nav>
+                <div class="flex gap-4">
+                    <button
+                        class="hidden sm:flex cursor-pointer items-center justify-center rounded px-4 py-2 text-slate-300 text-sm font-semibold hover:text-white transition-colors">
+                        Login
+                    </button>
+                    <button
+                        class="cursor-pointer items-center justify-center rounded-lg px-6 py-2 bg-accent-green text-primary text-sm font-bold tracking-wide hover:bg-[#33ff9d] transition-all shadow-[0_4px_15px_rgba(0,255,133,0.2)] hover:shadow-accent-green/40">
+                        Únete Ahora
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-grow">
+            <!-- Hero Section -->
+            <section class="relative min-h-screen flex items-center pt-24 pb-12 overflow-hidden">
+                <!-- Video Background -->
+                <div class="absolute inset-0 z-0 overflow-hidden">
+                    <iframe id="hero-player" class="video-background opacity-40"
+                        src="https://www.youtube.com/embed/MWIDhAQ0n9M?autoplay=1&mute=1&loop=1&playlist=MWIDhAQ0n9M&controls=0&showinfo=0&rel=0&enablejsapi=1"
+                        frameborder="0" allow="autoplay; fullscreen"></iframe>
+                    <div class="hero-video-overlay"></div>
+                </div>
+
+                <div
+                    class="absolute top-1/4 right-0 w-[500px] h-[500px] bg-secondary/10 rounded-full blur-[120px] pointer-events-none">
+                </div>
+                <div
+                    class="absolute bottom-0 left-0 w-[400px] h-[400px] bg-accent-green/10 rounded-full blur-[150px] pointer-events-none">
+                </div>
+
+                <div class="relative z-10 w-full max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center">
+                    <div class="flex flex-col gap-8 text-center lg:text-left">
+                        <div
+                            class="inline-flex items-center gap-2 self-center lg:self-start px-4 py-1.5 rounded-full border border-secondary/30 bg-secondary/10 backdrop-blur-sm">
+                            <span class="flex h-2 w-2 rounded-full bg-secondary animate-pulse"></span>
+                            <span
+                                class="text-secondary text-xs font-bold uppercase tracking-wider font-display">Temporada
+                                24/25 Lista</span>
+                        </div>
+                        <h1
+                            class="text-5xl lg:text-7xl font-display font-bold leading-[1.1] tracking-tighter text-white">
+                            GANA TU LIGA <br />
+                            <span
+                                class="text-transparent bg-clip-text bg-gradient-to-r from-accent-green via-accent-cyan to-accent-green text-glow-pl">CON
+                                PRECISIÓN</span>
+                        </h1>
+                        <p class="text-lg text-slate-400 max-w-xl mx-auto lg:mx-0 font-light leading-relaxed">
+                            El asistente definitivo impulsado por IA para mánagers de FPL. Optimiza tu plantilla con
+                            análisis predictivo, algoritmos de transferencia en tiempo real y selecciones de capitán
+                            basadas en datos.
+                        </p>
+                        <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                            <button
+                                class="flex items-center justify-center gap-2 rounded-lg h-14 px-10 bg-accent-green text-primary font-bold hover:bg-[#33ff9d] transition-all transform hover:-translate-y-1 shadow-lg hover:shadow-accent-green/30 group/btn">
+                                <span>Empezar Gratis</span>
+                                <span
+                                    class="material-symbols-outlined text-xl group-hover/btn:animate-spin">sports_soccer</span>
+                            </button>
+                            <button
+                                class="flex items-center justify-center gap-2 rounded-lg h-14 px-10 bg-white/5 border border-white/10 text-white font-medium hover:bg-white/10 backdrop-blur-sm transition-all">
+                                <span class="material-symbols-outlined text-xl">play_circle</span>
+                                <span>Ver Demo</span>
+                            </button>
+                        </div>
+
+                        <div
+                            class="flex flex-col sm:flex-row items-center gap-4 mt-4 justify-center lg:justify-start opacity-80">
+                            <div class="flex -space-x-3">
+                                <div
+                                    class="w-10 h-10 rounded-full border-2 border-primary bg-slate-800 flex items-center justify-center text-xs font-bold">
+                                    +2k</div>
+                                <div
+                                    class="w-10 h-10 rounded-full border-2 border-primary bg-secondary/20 flex items-center justify-center text-xs font-bold text-secondary">
+                                    XI</div>
+                            </div>
+                            <div class="text-sm text-slate-400">
+                                <span class="text-accent-green font-bold">10,000+</span> Mánager confían en nosotros
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dashboard Mockup -->
+                    <div class="relative w-full max-w-[480px] mx-auto lg:mr-0 perspective-[1000px]">
+                        <div
+                            class="absolute -left-8 top-20 z-20 hidden lg:flex flex-col gap-2 p-5 rounded-xl glass-panel border-accent-green/20 animate-float">
+                            <div class="flex items-center gap-4">
+                                <div class="bg-accent-green/20 p-2 rounded-lg text-accent-green">
+                                    <span class="material-symbols-outlined text-xl">trending_up</span>
+                                </div>
+                                <div>
+                                    <p class="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Rango
+                                        Proyectado</p>
+                                    <p class="text-white font-display font-bold text-xl">Top 1%</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div
+                            class="relative bg-surface border border-white/10 rounded-2xl overflow-hidden shadow-2xl transform rotate-y-[-5deg] rotate-x-[5deg] transition-transform hover:rotate-0 duration-700">
+                            <div class="h-10 border-b border-white/5 bg-primary/20 flex items-center px-4 gap-2">
+                                <div class="flex gap-1.5">
+                                    <div class="w-3 h-3 rounded-full bg-secondary/30"></div>
+                                    <div class="w-3 h-3 rounded-full bg-accent-cyan/30"></div>
+                                    <div class="w-3 h-3 rounded-full bg-accent-green/30"></div>
+                                </div>
+                                <div class="ml-4 h-4 w-32 bg-white/5 rounded-full"></div>
+                            </div>
+                            <div class="p-8">
+                                <div class="flex justify-between items-end mb-8">
+                                    <div>
+                                        <p class="text-slate-500 text-[10px] uppercase tracking-widest mb-1">Jornada 12
+                                        </p>
+                                        <h3 class="text-white text-2xl font-display font-bold">Once Recomendado</h3>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-slate-500 text-[10px] uppercase tracking-widest mb-1">Puntos
+                                            Esperados</p>
+                                        <p class="text-accent-green text-3xl font-display font-bold text-glow-pl">84 pts
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="relative aspect-[4/3] pitch-gradient rounded-xl border border-white/10 p-6 flex flex-col justify-between overflow-hidden">
+                                    <!-- Pitch Markings -->
+                                    <div class="absolute inset-0 pointer-events-none">
+                                        <div
+                                            class="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-20 border-b border-l border-r border-white/10 rounded-b-3xl">
+                                        </div>
+                                        <div
+                                            class="absolute bottom-0 left-1/2 -translate-x-1/2 w-48 h-12 border-t border-l border-r border-white/10 rounded-t-3xl">
+                                        </div>
+                                        <div class="absolute top-1/2 left-0 right-0 h-[1px] bg-white/10"></div>
+                                        <div
+                                            class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 border border-white/10 rounded-full">
+                                        </div>
+                                    </div>
+
+                                    <!-- Players -->
+                                    <div class="flex justify-center gap-12 relative z-10">
+                                        <div class="flex flex-col items-center gap-1.5">
+                                            <div
+                                                class="w-12 h-12 rounded-full bg-slate-800 border-2 border-accent-green flex items-center justify-center relative shadow-xl transform hover:scale-110 transition-transform">
+                                                <span class="text-white text-xs font-bold">HA</span>
+                                                <div
+                                                    class="absolute -top-2 -right-2 bg-accent-green text-primary text-[10px] font-black px-1.5 py-0.5 rounded-full">
+                                                    C</div>
+                                            </div>
+                                            <div
+                                                class="bg-black/60 backdrop-blur-sm px-2 py-0.5 rounded text-[10px] text-accent-green font-bold">
+                                                12.4</div>
+                                        </div>
+                                        <div class="flex flex-col items-center gap-1.5">
+                                            <div
+                                                class="w-12 h-12 rounded-full bg-slate-800 border-2 border-white/20 flex items-center justify-center shadow-xl transform hover:scale-110 transition-transform">
+                                                <span class="text-white text-xs font-bold">WA</span>
+                                            </div>
+                                            <div
+                                                class="bg-black/60 backdrop-blur-sm px-2 py-0.5 rounded text-[10px] text-white">
+                                                6.2</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex justify-center gap-8 relative z-10">
+                                        <div
+                                            class="w-10 h-10 rounded-full bg-slate-800 border-2 border-white/20 flex items-center justify-center opacity-70">
+                                        </div>
+                                        <div class="flex flex-col items-center gap-1.5">
+                                            <div
+                                                class="w-12 h-12 rounded-full bg-slate-800 border-2 border-accent-cyan/60 flex items-center justify-center relative shadow-xl transform hover:scale-110 transition-transform">
+                                                <span class="text-white text-xs font-bold">SA</span>
+                                                <div
+                                                    class="absolute -top-2 -right-2 bg-white text-primary text-[10px] font-black px-1.5 py-0.5 rounded-full">
+                                                    V</div>
+                                            </div>
+                                            <div
+                                                class="bg-black/60 backdrop-blur-sm px-2 py-0.5 rounded text-[10px] text-white text-glow-pl">
+                                                9.5</div>
+                                        </div>
+                                        <div
+                                            class="w-10 h-10 rounded-full bg-slate-800 border-2 border-white/20 flex items-center justify-center opacity-70">
+                                        </div>
+                                    </div>
+
+                                    <div class="flex justify-center relative z-10">
+                                        <div
+                                            class="w-12 h-12 rounded-full bg-secondary/20 border-2 border-secondary flex items-center justify-center shadow-xl">
+                                            <span class="text-secondary text-xs font-bold">RA</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ═══════════════════════════════════════════════
+                 3D FOOTBALL DATA SECTION
+            ═══════════════════════════════════════════════ -->
+            <section id="ball-station" class="relative w-full py-24 px-6 bg-pl-dark overflow-hidden">
+
+                <!-- Background ambient glow blobs -->
+                <div
+                    class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/20 rounded-full blur-[150px] pointer-events-none">
+                </div>
+                <div
+                    class="absolute top-1/2 left-1/4 -translate-y-1/2 w-[300px] h-[300px] bg-accent-green/5 rounded-full blur-[100px] pointer-events-none">
+                </div>
+                <div
+                    class="absolute top-1/2 right-1/4 -translate-y-1/2 w-[300px] h-[300px] bg-accent-cyan/5 rounded-full blur-[100px] pointer-events-none">
+                </div>
+
+                <div class="max-w-6xl mx-auto relative z-10">
+
+                    <!-- Section header -->
+                    <div class="text-center mb-12">
+                        <span
+                            class="text-accent-green text-xs font-bold uppercase tracking-[0.35em] font-display mb-3 block">Motor
+                            de Análisis</span>
+                        <h2 class="text-4xl lg:text-5xl font-display font-bold text-white tracking-tight">
+                            Decisiones Impulsadas por
+                            <span
+                                class="text-transparent bg-clip-text bg-gradient-to-r from-accent-green to-accent-cyan">
+                                Datos</span>
+                        </h2>
+                        <p class="text-slate-500 mt-4 text-base max-w-xl mx-auto mb-8">Cada transferencia, cada capitán
+                            —
+                            respaldado por nuestro modelo predictivo en tiempo real.</p>
+
+                        <div class="flex justify-center">
+                            <button
+                                class="bg-accent-green text-primary font-black py-4 px-10 rounded-xl uppercase tracking-widest text-sm hover:bg-white transition-all shadow-[0_0_20px_rgba(0,255,133,0.3)] hover:shadow-accent-green/50 transform hover:-translate-y-1 active:scale-95 duration-300">
+                                Analizar mi equipo
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Main interaction area -->
+                    <div id="ball-field" class="relative flex items-center justify-center" style="min-height: 520px;">
+
+                        <!-- SVG overlay for connection lines -->
+                        <svg id="ball-svg-lines" class="absolute inset-0 w-full h-full pointer-events-none"
+                            xmlns="http://www.w3.org/2000/svg" style="z-index: 1;">
+                        </svg>
+
+                        <!-- ── STAT NODES ── -->
+                        <!-- Top Left -->
+                        <div class="stat-node absolute" style="top: 6%; left: 4%; z-index: 2;">
+                            <div class="glass-panel rounded-xl p-4 border border-accent-green/20 hover:border-accent-green/50 transition-all group"
+                                style="min-width: 140px;">
+                                <p class="text-[10px] text-slate-500 uppercase tracking-widest font-bold mb-1">Rango
+                                    Proyectado</p>
+                                <p
+                                    class="text-white text-2xl font-display font-bold group-hover:text-accent-green transition-colors">
+                                    Top 1%</p>
+                                <div class="flex items-center gap-1 mt-1">
+                                    <span class="w-2 h-2 rounded-full bg-accent-green animate-pulse"></span>
+                                    <span class="text-accent-green text-[10px] font-bold">EN VIVO</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Top Right -->
+                        <div class="stat-node absolute" style="top: 6%; right: 4%; z-index: 2;">
+                            <div class="glass-panel rounded-xl p-4 border border-accent-cyan/20 hover:border-accent-cyan/50 transition-all group"
+                                style="min-width: 140px;">
+                                <p class="text-[10px] text-slate-500 uppercase tracking-widest font-bold mb-1">xG
+                                    Esperado</p>
+                                <p class="text-accent-cyan text-2xl font-display font-bold">2.8 xG</p>
+                                <p class="text-slate-500 text-[10px] mt-1">próxima jornada</p>
+                            </div>
+                        </div>
+
+                        <!-- Left -->
+                        <div class="stat-node absolute hidden lg:block"
+                            style="top: 50%; left: 2%; transform: translateY(-50%); z-index: 2;">
+                            <div class="glass-panel rounded-xl p-4 border border-secondary/20 hover:border-secondary/50 transition-all group"
+                                style="min-width: 140px;">
+                                <p class="text-[10px] text-slate-500 uppercase tracking-widest font-bold mb-1">Mánagers
+                                    Activos</p>
+                                <p class="text-secondary text-2xl font-display font-bold">10k+</p>
+                                <p class="text-slate-500 text-[10px] mt-1">confiando en PRIME XI</p>
+                            </div>
+                        </div>
+
+                        <!-- Right -->
+                        <div class="stat-node absolute hidden lg:block"
+                            style="top: 50%; right: 2%; transform: translateY(-50%); z-index: 2;">
+                            <div class="glass-panel rounded-xl p-4 border border-accent-green/20 hover:border-accent-green/50 transition-all group"
+                                style="min-width: 140px;">
+                                <p class="text-[10px] text-slate-500 uppercase tracking-widest font-bold mb-1">Precisión
+                                    del Modelo</p>
+                                <p
+                                    class="text-white text-2xl font-display font-bold group-hover:text-accent-green transition-colors">
+                                    98%</p>
+                                <div class="mt-2 h-1 bg-white/10 rounded-full overflow-hidden">
+                                    <div class="h-full bg-accent-green rounded-full" style="width: 98%;"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bottom Center -->
+                        <div class="stat-node absolute"
+                            style="bottom: 4%; left: 50%; transform: translateX(-50%); z-index: 2;">
+                            <div
+                                class="glass-panel rounded-xl px-6 py-3 border border-accent-green/20 hover:border-accent-green/50 transition-all flex items-center gap-4">
+                                <div class="text-center">
+                                    <p class="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Puntos
+                                        Promedio</p>
+                                    <p class="text-accent-green text-xl font-display font-bold">84 pts</p>
+                                </div>
+                                <div class="w-px h-8 bg-white/10"></div>
+                                <div class="text-center">
+                                    <p class="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Costo
+                                        Inicial</p>
+                                    <p class="text-white text-xl font-display font-bold">£0</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- THREE.JS CANVAS — centered -->
+                        <div style="position: relative; z-index: 3;">
+                            <canvas id="ball-canvas" class="block rounded-full"
+                                style="filter: drop-shadow(0 0 40px rgba(0,255,133,0.25)) drop-shadow(0 0 80px rgba(4,245,255,0.1));"></canvas>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+            <section id="features" class="relative z-10 py-32 px-6 overflow-hidden">
+                <div class="max-w-7xl mx-auto">
+                    <div class="control-center">
+
+                        <!-- Columna Izquierda: Info & Chips -->
+                        <div class="flex flex-col gap-8">
+                            <div class="space-y-4">
+                                <span
+                                    class="text-accent-green text-xs font-bold uppercase tracking-[0.4em] font-display">SISTEMA
+                                    CORE</span>
+                                <h2
+                                    class="text-5xl lg:text-6xl font-display font-bold text-white tracking-tighter leading-none">
+                                    MATCHDAY <br /><span
+                                        class="text-transparent bg-clip-text bg-gradient-to-r from-accent-green to-accent-cyan">CONTROL
+                                        CENTER</span>
+                                </h2>
+                                <p class="text-slate-400 text-lg max-w-md font-light leading-relaxed">
+                                    Nuestra IA procesa millones de variables tácticas cada segundo para ofrecerte la
+                                    ventaja definitiva en tiempo real.
+                                </p>
+                            </div>
+
+                            <div class="flex flex-wrap gap-3 max-w-md">
+                                <div class="data-chip">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-accent-green"></span>
+                                    LIVE xG: <span class="live-value" data-value="0.86" data-step="0.01">0.86</span>
+                                </div>
+                                <div class="data-chip">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-accent-cyan"></span>
+                                    AI CONFIDENCE: <span class="live-value" data-value="92.4"
+                                        data-step="0.1">92.4</span>%
+                                </div>
+                                <div class="data-chip">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+                                    FORM INDEX: <span class="live-value" data-value="8.7" data-step="0.1">8.7</span>
+                                </div>
+                                <div class="data-chip">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-white opacity-40"></span>
+                                    OWNERSHIP: <span class="live-value" data-value="54.2" data-step="0.1">54.2</span>%
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Columna Derecha: Dashboard -->
+                        <div class="dashboard-grid">
+
+                            <!-- Proyección de Rango (Gráfica Mejorada) -->
+                            <div class="viz-card">
+                                <div class="flex justify-between items-start mb-6">
+                                    <span class="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Rank
+                                        Ascent Projection</span>
+                                    <span class="text-accent-green text-xs font-bold">+12.4%</span>
+                                </div>
+                                <div class="h-32 w-full">
+                                    <svg viewBox="0 0 200 80" class="w-full h-full overflow-visible">
+                                        <defs>
+                                            <linearGradient id="chartGradient" x1="0" x2="0" y1="0" y2="1">
+                                                <stop offset="0%" stop-color="#00FF85" stop-opacity="0.4"></stop>
+                                                <stop offset="100%" stop-color="#04F5FF" stop-opacity="0"></stop>
+                                            </linearGradient>
+                                        </defs>
+                                        <path class="chart-path active"
+                                            d="M0,70 C20,65 40,75 60,50 C80,25 100,45 120,20 C140,-5 180,10 200,5"
+                                            fill="none" stroke="#00FF85" stroke-width="2" stroke-linecap="round"></path>
+                                        <path class="chart-area"
+                                            d="M0,70 C20,65 40,75 60,50 C80,25 100,45 120,20 C140,-5 180,10 200,5 L200,80 L0,80 Z">
+                                        </path>
+
+                                        <!-- Data Points -->
+                                        <circle class="chart-point active" cx="60" cy="50" r="3"></circle>
+                                        <circle class="chart-point active" cx="120" cy="20" r="3"></circle>
+                                        <circle class="chart-point active chart-point-last" cx="200" cy="5" r="3">
+                                        </circle>
+                                    </svg>
+                                </div>
+                            </div>
+
+                            <!-- Rating de Jugadores -->
+                            <div class="viz-card flex flex-col justify-center gap-4">
+                                <div class="space-y-1">
+                                    <div class="flex justify-between text-[10px] font-bold uppercase text-slate-500">
+                                        <span>Defense Stability</span>
+                                        <span class="text-white">82%</span>
+                                    </div>
+                                    <div class="h-1 bg-white/5 rounded-full">
+                                        <div class="h-full bg-accent-cyan rounded-full" style="width: 82%"></div>
+                                    </div>
+                                </div>
+                                <div class="space-y-1">
+                                    <div class="flex justify-between text-[10px] font-bold uppercase text-slate-500">
+                                        <span>Attack Flow</span>
+                                        <span class="text-white">95%</span>
+                                    </div>
+                                    <div class="h-1 bg-white/5 rounded-full">
+                                        <div class="h-full bg-accent-green rounded-full" style="width: 95%"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Captain Highlight -->
+                            <div class="viz-card captain-card">
+                                <div class="z-10">
+                                    <span
+                                        class="inline-block px-2 py-1 bg-accent-green/10 text-accent-green text-[10px] font-black rounded mb-2 uppercase tracking-tighter">Recommended
+                                        Captain</span>
+                                    <h3 class="text-3xl font-display font-black text-white leading-none mb-1 uppercase">
+                                        E. Haaland</h3>
+                                    <div class="flex items-center gap-4 text-xs font-bold text-slate-400">
+                                        <span>MC (H) vs AVL</span>
+                                        <span class="text-white">|</span>
+                                        <span class="text-accent-green font-display text-xl">10.4 <span
+                                                class="text-[10px] uppercase font-bold">pts exp.</span></span>
+                                    </div>
+                                </div>
+                                <img src="img/futuristic_player_avatar.png" alt="PRIME XI Avatar"
+                                    class="player-avatar-img">
+                            </div>
+
+                            <!-- Road to Top 1% Block -->
+                            <div class="road-to-top">
+                                <div class="flex flex-col md:flex-row justify-between items-end gap-6 relative z-10">
+                                    <div class="flex flex-col gap-2">
+                                        <span
+                                            class="text-accent-green text-xs font-bold uppercase tracking-[.3em]">Ambition
+                                            Mode: ON</span>
+                                        <h3 class="text-3xl font-display font-bold text-white tracking-tight">ROAD TO
+                                            <span class="text-accent-green">TOP 1%</span>
+                                        </h3>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-1">
+                                            Projected Rank Rise</p>
+                                        <p class="rank-indicator text-2xl text-white">
+                                            <span class="text-slate-500">184,320</span>
+                                            <span class="mx-2 text-accent-green">→</span>
+                                            <span class="text-glow-pl">96,540</span>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="progress-track">
+                                    <div class="progress-fill" id="rank-progress"></div>
+                                </div>
+                                <div
+                                    class="flex justify-between text-[10px] font-bold uppercase text-slate-500 tracking-tighter">
+                                    <span>Current Tier: Gold III</span>
+                                    <span class="text-accent-green">Elite Status: 45.2% Progress</span>
+                                    <span>Next Tier: Diamond I</span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- The Prime XI Protocol -->
+            <section id="protocol" class="relative py-32 px-6">
+                <div class="max-w-7xl mx-auto relative z-10">
+                    <div class="grid lg:grid-cols-2 gap-16 items-center">
+
+                        <!-- Track de Fases -->
+                        <div class="space-y-12">
+                            <div class="mb-12">
+                                <span
+                                    class="text-accent-green text-xs font-bold uppercase tracking-[0.5em] font-display mb-4 block">Strategic
+                                    Framework</span>
+                                <h2
+                                    class="text-4xl font-display font-bold text-white md:text-5xl tracking-tighter uppercase transition-all">
+                                    The Prime XI <br /><span class="text-accent-green text-glow-pl">Protocol</span></h2>
+                            </div>
+
+                            <div class="space-y-8">
+                                <!-- Phase 01 -->
+                                <div class="flex gap-6 items-start group">
+                                    <div
+                                        class="w-12 h-12 flex-shrink-0 flex items-center justify-center border border-white/10 bg-white/5 text-accent-green font-display font-black text-xl group-hover:bg-accent-green group-hover:text-black transition-all">
+                                        01</div>
+                                    <div class="flex-1">
+                                        <h3
+                                            class="text-white font-bold uppercase tracking-widest text-sm mb-2 group-hover:text-accent-green transition-colors">
+                                            Data Ingestion</h3>
+                                        <p class="text-slate-500 text-sm leading-relaxed">Sincronización masiva de
+                                            métricas avanzadas (xG, forma, ownership) y contexto competitivo en tiempo
+                                            real.</p>
+                                    </div>
+                                </div>
+
+                                <!-- Phase 02 -->
+                                <div class="flex gap-6 items-start group">
+                                    <div
+                                        class="w-12 h-12 flex-shrink-0 flex items-center justify-center border border-white/10 bg-white/5 text-accent-green font-display font-black text-xl group-hover:bg-accent-green group-hover:text-black transition-all">
+                                        02</div>
+                                    <div class="flex-1">
+                                        <h3
+                                            class="text-white font-bold uppercase tracking-widest text-sm mb-2 group-hover:text-accent-green transition-colors">
+                                            Probability Engine</h3>
+                                        <p class="text-slate-500 text-sm leading-relaxed">Modelado Monte Carlo para
+                                            detectar ventaja estadística real y optimización de valor esperado.</p>
+                                    </div>
+                                </div>
+
+                                <!-- Phase 03 -->
+                                <div class="flex gap-6 items-start group">
+                                    <div
+                                        class="w-12 h-12 flex-shrink-0 flex items-center justify-center border border-white/10 bg-white/5 text-accent-green font-display font-black text-xl group-hover:bg-accent-green group-hover:text-black transition-all">
+                                        03</div>
+                                    <div class="flex-1">
+                                        <h3
+                                            class="text-white font-bold uppercase tracking-widest text-sm mb-2 group-hover:text-accent-green transition-colors">
+                                            Execution</h3>
+                                        <p class="text-slate-500 text-sm leading-relaxed">Generación de la acción
+                                            óptima: selección de capitán y transferencias estratégicas antes del
+                                            deadline.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Radar Visualización -->
+                        <div
+                            class="radar-module rounded-3xl p-10 border border-white/5 bg-surface/50 backdrop-blur-3xl relative overflow-hidden group">
+                            <div
+                                class="absolute inset-0 bg-gradient-to-br from-accent-green/5 to-transparent pointer-events-none">
+                            </div>
+
+                            <div class="relative z-10">
+                                <div class="text-center mb-10">
+                                    <p class="text-accent-green text-[10px] font-bold uppercase tracking-[0.4em] mb-2">
+                                        Manager Performance Profile</p>
+                                    <h4 class="text-white text-xl font-display font-bold uppercase tracking-tight">
+                                        Competitive Edge Analysis</h4>
+                                </div>
+
+                                <div class="relative aspect-square max-w-[320px] mx-auto">
+                                    <svg viewBox="0 0 200 200" class="w-full h-full overflow-visible">
+                                        <g class="opacity-20">
+                                            <circle cx="100" cy="100" r="80" fill="none" stroke="white"
+                                                stroke-width="0.5"></circle>
+                                            <circle cx="100" cy="100" r="60" fill="none" stroke="white"
+                                                stroke-width="0.5"></circle>
+                                            <circle cx="100" cy="100" r="40" fill="none" stroke="white"
+                                                stroke-width="0.5"></circle>
+                                            <polygon points="100,20 176.1,75.3 147.1,164.7 52.9,164.7 23.9,75.3"
+                                                fill="none" stroke="white" stroke-width="1"></polygon>
+                                        </g>
+
+                                        <!-- Axis Lines -->
+                                        <g class="opacity-10">
+                                            <line x1="100" y1="100" x2="100" y2="20" stroke="white"></line>
+                                            <line x1="100" y1="100" x2="176.1" y2="75.3" stroke="white"></line>
+                                            <line x1="100" y1="100" x2="147.1" y2="164.7" stroke="white"></line>
+                                            <line x1="100" y1="100" x2="52.9" y2="164.7" stroke="white"></line>
+                                            <line x1="100" y1="100" x2="23.9" y2="75.3" stroke="white"></line>
+                                        </g>
+
+                                        <!-- Radar Labels -->
+                                        <text x="100" y="8" text-anchor="middle"
+                                            class="fill-slate-500 font-bold text-[7px] uppercase tracking-tighter">ADAPTABILITY</text>
+                                        <text x="185" y="75" text-anchor="start"
+                                            class="fill-slate-500 font-bold text-[7px] uppercase tracking-tighter">AI
+                                            PRECISION</text>
+                                        <text x="160" y="182" text-anchor="start"
+                                            class="fill-slate-500 font-bold text-[7px] uppercase tracking-tighter">CONSISTENCY</text>
+                                        <text x="40" y="182" text-anchor="end"
+                                            class="fill-slate-500 font-bold text-[7px] uppercase tracking-tighter">RISK
+                                            MGMT</text>
+                                        <text x="15" y="75" text-anchor="end"
+                                            class="fill-slate-500 font-bold text-[7px] uppercase tracking-tighter">TRANSFER
+                                            Q.</text>
+
+                                        <!-- Average Manager Shape -->
+                                        <polygon points="100,60 138,88 123,132 77,132 62,88"
+                                            fill="rgba(233, 0, 82, 0.05)" stroke="#E90052" stroke-width="1"
+                                            stroke-dasharray="2,2"></polygon>
+
+                                        <!-- PRIME XI Manager Shape -->
+                                        <polygon id="radar-points" points="100,100 100,100 100,100 100,100 100,100"
+                                            fill="rgba(0, 255, 133, 0.15)" stroke="#00FF85" stroke-width="2.5"
+                                            style="transition: all 1.5s cubic-bezier(0.34, 1.56, 0.64, 1);"></polygon>
+                                    </svg>
+                                </div>
+
+                                <div class="flex justify-center gap-10 mt-10">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-1.5 h-1.5 bg-secondary rounded-full opacity-50"></div>
+                                        <span
+                                            class="text-[9px] text-slate-500 font-bold uppercase tracking-wider">Average
+                                            Manager</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-1.5 h-1.5 bg-accent-green rounded-full shadow-[0_0_8px_#00FF85]">
+                                        </div>
+                                        <span class="text-[9px] text-white font-bold uppercase tracking-wider">Prime XI
+                                            Protocol</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+            <!-- War Room 3D Experience -->
+            <section id="war-room-3d" class="relative w-full h-screen overflow-hidden bg-black">
+                <!-- WebGL Canvas injected here by warroom3d.js -->
+                <div id="war-room-canvas-container" class="absolute inset-0 z-0"></div>
+
+                <!-- DOM Overlay — sits above canvas, never transforms -->
+                <div
+                    class="relative z-10 w-full h-full flex flex-col items-center justify-center pointer-events-none text-center p-6">
+                    <div class="mt-[-5vh]">
+                        <span
+                            class="text-accent-green text-xs font-bold uppercase tracking-[0.8em] font-display mb-6 block opacity-70">Neural
+                            Command Active</span>
+                        <h2
+                            class="text-6xl lg:text-9xl font-display font-black text-white tracking-tighter uppercase mb-6 leading-none">
+                            ENTER THE <br> <span class="text-glow-dynamic">PRIME XI</span> <br> WAR ROOM
+                        </h2>
+                        <p
+                            class="text-slate-400 text-sm lg:text-base font-bold uppercase tracking-[0.4em] max-w-xl mx-auto mb-12 opacity-50">
+                            Advanced Strategy // Intelligence Feed
+                        </p>
+                        <div class="pointer-events-auto">
+                            <button
+                                class="px-12 py-5 bg-white text-primary font-black uppercase tracking-[0.3em] text-xs rounded-full hover:bg-accent-green transition-all duration-500 shadow-2xl active:scale-95">
+                                Establish Link
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section id="war-room" class="relative py-32 px-6 overflow-hidden bg-[#05010d]">
+                <div class="max-w-7xl mx-auto relative z-10">
+                    <div class="text-center mb-16">
+                        <span
+                            class="text-accent-green text-xs font-bold uppercase tracking-[0.5em] font-display mb-4 block">Elite
+                            Insights Preview</span>
+                        <h2 class="text-5xl font-display font-bold text-white tracking-tighter uppercase mb-4">Inside
+                            the <span class="text-glow-pink text-secondary">War Room</span></h2>
+                        <p class="text-slate-500 font-bold uppercase tracking-[0.2em] text-sm italic">"Advanced
+                            intelligence. Restricted access."</p>
+                    </div>
+
+                    <!-- Blurred Intelligence Grid -->
+                    <div class="relative group/grid">
+                        <div class="grid lg:grid-cols-3 gap-8 pointer-events-none sm:pointer-events-auto">
+
+                            <!-- Block A: Captain Probability Matrix -->
+                            <div class="war-room-card group">
+                                <div class="p-6 border-b border-white/5 flex justify-between items-center">
+                                    <h4 class="text-xs font-bold uppercase tracking-widest text-slate-400">Captaincy
+                                        Matrix</h4>
+                                    <span class="text-[10px] text-accent-green animate-pulse">LIVE UPDATING</span>
+                                </div>
+                                <div class="p-6 space-y-4 relative overflow-hidden">
+                                    <div class="flex justify-between items-center blur-[2px] opacity-80">
+                                        <span class="text-sm font-medium">Mohamed Salah</span>
+                                        <span class="text-sm font-black text-accent-green">68.4%</span>
+                                    </div>
+                                    <div class="flex justify-between items-center blur-[4px] opacity-60">
+                                        <span class="text-sm font-medium">Bukayo Saka</span>
+                                        <span class="text-sm font-black text-accent-green">54.2%</span>
+                                    </div>
+                                    <div class="flex justify-between items-center blur-[8px] opacity-40">
+                                        <span class="text-sm font-medium">Palmer</span>
+                                        <span class="text-sm font-black text-accent-green">32.1%</span>
+                                    </div>
+                                    <div class="flex justify-between items-center blur-[12px] opacity-20">
+                                        <span class="text-sm font-medium">Son Heung-min</span>
+                                        <span class="text-sm font-black text-accent-green">18.5%</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Block B: Transfer Delta Table -->
+                            <div class="war-room-card group">
+                                <div class="p-6 border-b border-white/5 flex justify-between items-center">
+                                    <h4 class="text-xs font-bold uppercase tracking-widest text-slate-400">Transfer
+                                        Delta</h4>
+                                    <span class="text-secondary text-[10px] font-bold">ALERTS ACTIVE</span>
+                                </div>
+                                <div class="p-6 relative">
+                                    <div class="flex items-center gap-4 mb-4 blur-[1px]">
+                                        <div class="flex-1 text-xs text-slate-500 font-bold uppercase">Player Out</div>
+                                        <div class="text-accent-green font-bold">→</div>
+                                        <div class="flex-1 text-xs text-slate-500 font-bold uppercase">Player In</div>
+                                    </div>
+                                    <div class="space-y-4">
+                                        <div class="flex items-center gap-4 blur-[3px] opacity-70">
+                                            <div class="flex-1 text-sm font-medium truncate">Watkins</div>
+                                            <div class="text-accent-cyan text-xs font-bold">+4.2 EV</div>
+                                            <div class="flex-1 text-sm font-medium text-right truncate">Isak</div>
+                                        </div>
+                                        <div class="flex items-center gap-4 blur-[6px] opacity-40">
+                                            <div class="flex-1 text-sm font-medium truncate">Gordon</div>
+                                            <div class="text-accent-cyan text-xs font-bold">+2.1 EV</div>
+                                            <div class="flex-1 text-sm font-medium text-right truncate">Foden</div>
+                                        </div>
+                                        <div class="flex items-center gap-4 blur-[10px] opacity-20">
+                                            <div class="flex-1 text-sm font-medium truncate">Gabriel</div>
+                                            <div class="text-accent-cyan text-xs font-bold">+1.8 EV</div>
+                                            <div class="flex-1 text-sm font-medium text-right truncate">Saliba</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Block C: Fixture Heatmap -->
+                            <div class="war-room-card group">
+                                <div class="p-6 border-b border-white/5 flex justify-between items-center">
+                                    <h4 class="text-xs font-bold uppercase tracking-widest text-slate-400">Fixture
+                                        Heatmap</h4>
+                                    <span class="text-[10px] text-slate-600 font-bold">GW 28-32</span>
+                                </div>
+                                <div class="p-6 relative">
+                                    <div class="grid grid-cols-5 gap-2 blur-[2px] opacity-80">
+                                        <div class="aspect-square bg-accent-green rounded-sm opacity-20"></div>
+                                        <div class="aspect-square bg-accent-green rounded-sm opacity-60"></div>
+                                        <div
+                                            class="aspect-square bg-accent-green rounded-sm opacity-100 shadow-[0_0_10px_#00FF85]">
+                                        </div>
+                                        <div class="aspect-square bg-secondary rounded-sm opacity-40"></div>
+                                        <div class="aspect-square bg-accent-green rounded-sm opacity-30"></div>
+                                    </div>
+                                    <div class="grid grid-cols-5 gap-2 mt-2 blur-[6px] opacity-40">
+                                        <div class="aspect-square bg-secondary rounded-sm opacity-80"></div>
+                                        <div class="aspect-square bg-accent-green rounded-sm opacity-20"></div>
+                                        <div class="aspect-square bg-secondary rounded-sm opacity-60"></div>
+                                        <div class="aspect-square bg-secondary rounded-sm opacity-100"></div>
+                                        <div class="aspect-square bg-accent-green rounded-sm opacity-40"></div>
+                                    </div>
+                                    <div class="grid grid-cols-5 gap-2 mt-2 blur-[10px] opacity-10">
+                                        <div class="aspect-square bg-accent-green rounded-sm opacity-50"></div>
+                                        <div class="aspect-square bg-accent-green rounded-sm opacity-50"></div>
+                                        <div class="aspect-square bg-accent-green rounded-sm opacity-50"></div>
+                                        <div class="aspect-square bg-accent-green rounded-sm opacity-50"></div>
+                                        <div class="aspect-square bg-accent-green rounded-sm opacity-50"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Exclusive Access Overlay -->
+                        <div
+                            class="absolute inset-x-0 inset-y-[-20px] bg-pl-dark/40 backdrop-blur-[2px] flex flex-col items-center justify-center z-20 transition-all duration-700 group-hover/grid:bg-pl-dark/20 group-hover/grid:backdrop-blur-[1px]">
+                            <div
+                                class="bg-surface/90 border border-white/10 p-8 rounded-2xl shadow-2xl text-center max-w-sm transform transition-transform duration-500 group-hover/grid:scale-105">
+                                <span class="material-symbols-outlined text-accent-green text-4xl mb-4">lock</span>
+                                <h3 class="text-white text-xl font-display font-bold uppercase tracking-tight mb-2">
+                                    Restricted Intelligence</h3>
+                                <p class="text-slate-400 text-sm mb-8">Full analytical access is reserved for <span
+                                        class="text-accent-green font-bold">PRIME XI</span> members.</p>
+                                <button
+                                    class="w-full bg-white text-primary font-black py-4 rounded-xl uppercase tracking-widest text-sm hover:bg-accent-green transition-all shadow-xl hover:shadow-accent-green/20 active:scale-95 duration-300">
+                                    Unlock Full Access
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- CTA Final -->
+            <section class="relative py-32 px-6 bg-accent-green overflow-hidden">
+                <div class="absolute inset-0 opacity-10"
+                    style="background-image: radial-gradient(#3D195B 1px, transparent 1px); background-size: 24px 24px;">
+                </div>
+                <div class="relative z-10 max-w-4xl mx-auto text-center">
+                    <h2
+                        class="text-primary text-5xl md:text-7xl font-display font-black mb-8 tracking-tighter uppercase leading-tight">
+                        ¿LISTO PARA ESCALAR<br />POSICIONES?
+                    </h2>
+                    <p class="text-primary/70 text-xl font-medium mb-12 max-w-2xl mx-auto">
+                        Deja de adivinar y empieza a ganar. Únete a miles de mánagers que ya
+                        aseguran sus mini-ligas con
+                        IA.
+                    </p>
+                    <div class="flex flex-col sm:flex-row justify-center gap-6">
+                        <button
+                            class="bg-primary text-white text-lg font-bold py-5 px-12 rounded-xl shadow-2xl hover:shadow-primary/40 transition-all transform hover:-translate-y-1 flex items-center justify-center gap-3">
+                            <span>Comienza tu Temporada</span>
+                            <span class="material-symbols-outlined">arrow_forward</span>
+                        </button>
+                        <button
+                            class="bg-transparent border-2 border-primary text-primary hover:bg-primary/10 text-lg font-bold py-5 px-12 rounded-xl transition-colors">
+                            Ver Planes
+                        </button>
+                    </div>
+                    <p class="mt-8 text-primary/50 text-sm font-bold uppercase tracking-widest">
+                        No se requiere tarjeta
+                        para el periodo de prueba</p>
+                </div>
+            </section>
+        </main>
+
+        <footer class="bg-primary border-t border-white/5 py-16 px-6 lg:px-40">
+            <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-10">
+                <div class="flex items-center gap-5 mb-6 md:mb-0 group">
+                    <svg class="w-14 h-14" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M10 50C5 60 5 80 15 90M90 50C95 60 95 80 85 90" stroke="#00FF85" stroke-width="4"
+                            stroke-linecap="round" opacity="0.3" />
+                        <path d="M50 2L25 28L25 55C25 70 35 82 50 88C65 82 75 70 75 55L75 28L50 2Z" fill="#1A0B2E"
+                            stroke="#00FF85" stroke-width="3" />
+                        <path d="M50 2L35 25V48L50 58L65 48V25L50 2Z" fill="#3D195B" opacity="0.5" />
+                        <path d="M34 38L46 44L44 48L32 46L34 38Z" fill="#00FF85" />
+                        <path d="M66 38L54 44L56 48L68 46L66 38Z" fill="#00FF85" />
+                        <path d="M25 55C15 65 10 85 25 95M75 55C85 65 90 85 75 95" stroke="#00FF85" stroke-width="4"
+                            stroke-linecap="round" />
+                    </svg>
+                    <span
+                        class="text-white text-3xl font-display font-black tracking-widest uppercase leading-none">PRIME<span
+                            class="text-accent-green">XI</span></span>
+                </div>
+                <div class="text-slate-500 text-sm font-medium">
+                    © 2024 Prime XI Analytics. Diseñando el éxito.
+                </div>
+                <div class="flex gap-8">
+                    <a class="text-slate-500 hover:text-accent-green transition-colors text-sm font-bold uppercase tracking-widest"
+                        href="#">Privacidad</a>
+                    <a class="text-slate-500 hover:text-accent-green transition-colors text-sm font-bold uppercase tracking-widest"
+                        href="#">Términos</a>
+                    <a class="text-slate-500 hover:text-accent-green transition-colors text-sm font-bold uppercase tracking-widest"
+                        href="#">Contacto</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="js/script.js"></script>
+    <script type="module" src="js/ball3d.js"></script>
+    <script type="module" src="js/warroom3d.js"></script>
+</body>
+
+</html>

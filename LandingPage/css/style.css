@@ -1,237 +1,272 @@
 @layer utilities {
-    .text-glow-pl {
-        text-shadow: 0 0 15px rgba(0, 255, 133, 0.4);
+    .perspective-2000 {
+        perspective: 2000px;
     }
 
-    .text-glow-pink {
-        text-shadow: 0 0 15px rgba(233, 0, 82, 0.4);
+    .transform-style-3d {
+        transform-style: preserve-3d;
     }
 
-    .glass-panel {
-        background: rgba(61, 25, 91, 0.4);
-        backdrop-filter: blur(16px);
-        border: 1px solid rgba(255, 255, 255, 0.08);
+    .backface-hidden {
+        backface-visibility: hidden;
+    }
+}
+
+/* --- WAR ROOM 3D (WebGL canvas injected by warroom3d.js) --- */
+#war-room-canvas-container {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+}
+
+#war-room-canvas-container canvas {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.text-glow-dynamic {
+    color: #fff;
+    text-shadow: 0 0 20px rgba(0, 255, 133, 0.4);
+    transition: text-shadow 0.5s ease;
+}
+
+#war-room-3d:hover .text-glow-dynamic {
+    text-shadow: 0 0 40px rgba(0, 255, 133, 0.8), 0 0 80px rgba(0, 255, 133, 0.2);
+}
+
+.text-glow-pl {
+    text-shadow: 0 0 15px rgba(0, 255, 133, 0.4);
+}
+
+.text-glow-pink {
+    text-shadow: 0 0 15px rgba(233, 0, 82, 0.4);
+}
+
+.glass-panel {
+    background: rgba(61, 25, 91, 0.4);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.control-center {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 3rem;
+    align-items: center;
+    position: relative;
+}
+
+.terminal-window {
+    background: rgba(13, 1, 19, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.data-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #94a3b8;
+    transition: all 0.3s ease;
+}
+
+.data-chip:hover {
+    background: rgba(0, 255, 133, 0.05);
+    border-color: rgba(0, 255, 133, 0.2);
+    color: #00ff85;
+}
+
+.live-value {
+    color: #fff;
+    font-variant-numeric: tabular-nums;
+    min-width: 4ch;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+.viz-card {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    padding: 1.5rem;
+    backdrop-filter: blur(8px);
+    position: relative;
+}
+
+.captain-card {
+    grid-column: span 2;
+    background: linear-gradient(135deg, rgba(61, 25, 91, 0.4) 0%, rgba(2, 6, 23, 0.6) 100%);
+    border: 1px solid rgba(0, 255, 133, 0.15);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.road-to-top {
+    grid-column: span 2;
+    background: rgba(13, 1, 19, 0.6);
+    border: 1px solid rgba(0, 255, 133, 0.1);
+    border-radius: 24px;
+    padding: 2.5rem;
+    position: relative;
+    overflow: hidden;
+    margin-top: 1rem;
+    backdrop-filter: blur(12px);
+}
+
+.road-to-top::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 0%, rgba(0, 255, 133, 0.05) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.progress-track {
+    height: 14px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 100px;
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #3D195B 0%, #00FF85 100%);
+    width: 0;
+    border-radius: 100px;
+    transition: width 2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+    box-shadow: 0 0 20px rgba(0, 255, 133, 0.3);
+}
+
+.progress-fill::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 40px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4));
+    animation: progress-shimmer 2s infinite linear;
+}
+
+@keyframes progress-shimmer {
+    0% {
+        transform: translateX(-100%);
     }
 
-    .control-center {
-        display: grid;
-        grid-template-columns: 1fr 1.5fr;
-        gap: 3rem;
-        align-items: center;
-        position: relative;
+    100% {
+        transform: translateX(100%);
     }
+}
 
-    .terminal-window {
-        background: rgba(13, 1, 19, 0.8);
-        border: 1px solid rgba(255, 255, 255, 0.05);
-        border-radius: 12px;
-        padding: 2rem;
-        position: relative;
-        overflow: hidden;
-    }
+.rank-indicator {
+    font-family: 'Space Grotesk', sans-serif;
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+}
 
-    .data-chip {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        background: rgba(255, 255, 255, 0.03);
-        border: 1px solid rgba(255, 255, 255, 0.05);
-        padding: 6px 12px;
-        border-radius: 6px;
-        font-family: 'Space Grotesk', sans-serif;
-        font-size: 0.75rem;
-        font-weight: 600;
-        color: #94a3b8;
-        transition: all 0.3s ease;
-    }
+.chart-path {
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
+    transition: stroke-dashoffset 2s ease-in-out;
+}
 
-    .data-chip:hover {
-        background: rgba(0, 255, 133, 0.05);
-        border-color: rgba(0, 255, 133, 0.2);
-        color: #00ff85;
-    }
+.chart-path.active {
+    stroke-dashoffset: 0;
+}
 
-    .live-value {
-        color: #fff;
-        font-variant-numeric: tabular-nums;
-        min-width: 4ch;
-    }
+.chart-area {
+    fill: url(#chartGradient);
+    opacity: 0;
+    transition: opacity 1s 1s ease;
+}
 
-    .dashboard-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 1.5rem;
-    }
+.active+.chart-area {
+    opacity: 0.15;
+}
 
-    .viz-card {
-        background: rgba(255, 255, 255, 0.02);
-        border: 1px solid rgba(255, 255, 255, 0.05);
-        border-radius: 16px;
-        padding: 1.5rem;
-        backdrop-filter: blur(8px);
-        position: relative;
-    }
+.chart-point {
+    fill: #00FF85;
+    stroke: #020617;
+    stroke-width: 2;
+    filter: drop-shadow(0 0 5px rgba(0, 255, 133, 0.8));
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
 
-    .captain-card {
-        grid-column: span 2;
-        background: linear-gradient(135deg, rgba(61, 25, 91, 0.4) 0%, rgba(2, 6, 23, 0.6) 100%);
-        border: 1px solid rgba(0, 255, 133, 0.15);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 2rem;
-        position: relative;
-        overflow: hidden;
-    }
+.chart-point.active {
+    opacity: 1;
+}
 
-    .road-to-top {
-        grid-column: span 2;
-        background: rgba(13, 1, 19, 0.6);
-        border: 1px solid rgba(0, 255, 133, 0.1);
-        border-radius: 24px;
-        padding: 2.5rem;
-        position: relative;
-        overflow: hidden;
-        margin-top: 1rem;
-        backdrop-filter: blur(12px);
-    }
+.chart-point-last {
+    animation: point-pulse 2s infinite;
+}
 
-    .road-to-top::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: radial-gradient(circle at 50% 0%, rgba(0, 255, 133, 0.05) 0%, transparent 70%);
-        pointer-events: none;
-    }
-
-    .progress-track {
-        height: 14px;
-        background: rgba(255, 255, 255, 0.05);
-        border-radius: 100px;
-        overflow: hidden;
-        margin: 1.5rem 0;
-    }
-
-    .progress-fill {
-        height: 100%;
-        background: linear-gradient(90deg, #3D195B 0%, #00FF85 100%);
-        width: 0;
-        border-radius: 100px;
-        transition: width 2s cubic-bezier(0.34, 1.56, 0.64, 1);
-        position: relative;
-        box-shadow: 0 0 20px rgba(0, 255, 133, 0.3);
-    }
-
-    .progress-fill::after {
-        content: "";
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        width: 40px;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4));
-        animation: progress-shimmer 2s infinite linear;
-    }
-
-    @keyframes progress-shimmer {
-        0% {
-            transform: translateX(-100%);
-        }
-
-        100% {
-            transform: translateX(100%);
-        }
-    }
-
-    .rank-indicator {
-        font-family: 'Space Grotesk', sans-serif;
-        font-variant-numeric: tabular-nums;
-        font-weight: 700;
-    }
-
-    .chart-path {
-        stroke-dasharray: 1000;
-        stroke-dashoffset: 1000;
-        transition: stroke-dashoffset 2s ease-in-out;
-    }
-
-    .chart-path.active {
-        stroke-dashoffset: 0;
-    }
-
-    .chart-area {
-        fill: url(#chartGradient);
-        opacity: 0;
-        transition: opacity 1s 1s ease;
-    }
-
-    .active+.chart-area {
-        opacity: 0.15;
-    }
-
-    .chart-point {
-        fill: #00FF85;
-        stroke: #020617;
-        stroke-width: 2;
-        filter: drop-shadow(0 0 5px rgba(0, 255, 133, 0.8));
-        opacity: 0;
-        transition: opacity 0.5s ease;
-    }
-
-    .chart-point.active {
+@keyframes point-pulse {
+    0% {
+        r: 3;
         opacity: 1;
     }
 
-    .chart-point-last {
-        animation: point-pulse 2s infinite;
+    50% {
+        r: 6;
+        opacity: 0.5;
     }
 
-    @keyframes point-pulse {
-        0% {
-            r: 3;
-            opacity: 1;
-        }
+    100% {
+        r: 3;
+        opacity: 1;
+    }
+}
 
-        50% {
-            r: 6;
-            opacity: 0.5;
-        }
+.player-avatar-img {
+    width: 240px;
+    height: auto;
+    max-height: 100%;
+    object-fit: contain;
+    position: absolute;
+    right: -10px;
+    bottom: 0;
+    z-index: 5;
+    pointer-events: none;
+    filter: drop-shadow(-20px 0 30px rgba(0, 0, 0, 0.6));
+}
 
-        100% {
-            r: 3;
-            opacity: 1;
-        }
+.captain-card:hover .player-avatar-img {
+    transform: scale(1.05) translateX(-5px);
+}
+
+@media (max-width: 1024px) {
+    .control-center {
+        grid-template-columns: 1fr;
+    }
+
+    .road-to-top {
+        padding: 2rem;
     }
 
     .player-avatar-img {
-        width: 240px;
-        height: auto;
-        max-height: 100%;
-        object-fit: contain;
-        position: absolute;
-        right: -10px;
-        bottom: 0;
-        z-index: 5;
-        pointer-events: none;
-        filter: drop-shadow(-20px 0 30px rgba(0, 0, 0, 0.6));
-    }
-
-    .captain-card:hover .player-avatar-img {
-        transform: scale(1.05) translateX(-5px);
-    }
-
-    @media (max-width: 1024px) {
-        .control-center {
-            grid-template-columns: 1fr;
-        }
-
-        .road-to-top {
-            padding: 2rem;
-        }
-
-        .player-avatar-img {
-            display: none;
-        }
+        display: none;
     }
 }
 

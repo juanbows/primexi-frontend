@@ -28,6 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+
     // Intersection Observer for animations on scroll
     const observerOptions = {
         threshold: 0.1
