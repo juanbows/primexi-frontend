@@ -1,24 +1,492 @@
-/* Custom styles for PRIME XI - Premier League Edition */
-/* Most styles are handled via Tailwind and internal CSS in index.html for rapid development */
-
 @layer utilities {
-    .text-glow-pl {
-        text-shadow: 0 0 15px rgba(0, 255, 133, 0.4);
+    .perspective-2000 {
+        perspective: 2000px;
     }
 
-    .text-glow-pink {
-        text-shadow: 0 0 15px rgba(233, 0, 82, 0.4);
+    .transform-style-3d {
+        transform-style: preserve-3d;
     }
 
-    .glass-panel {
-        background: rgba(61, 25, 91, 0.7);
-        backdrop-filter: blur(12px);
+    .backface-hidden {
+        backface-visibility: hidden;
     }
 }
 
-/* Specific animations if needed outside index.html */
+/* --- WAR ROOM 3D (WebGL canvas injected by warroom3d.js) --- */
+#war-room-canvas-container {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+}
+
+#war-room-canvas-container canvas {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.text-glow-dynamic {
+    color: #fff;
+    text-shadow: 0 0 20px rgba(0, 255, 133, 0.4);
+    transition: text-shadow 0.5s ease;
+}
+
+#war-room-3d:hover .text-glow-dynamic {
+    text-shadow: 0 0 40px rgba(0, 255, 133, 0.8), 0 0 80px rgba(0, 255, 133, 0.2);
+}
+
+.text-glow-pl {
+    text-shadow: 0 0 15px rgba(0, 255, 133, 0.4);
+}
+
+.text-glow-pink {
+    text-shadow: 0 0 15px rgba(233, 0, 82, 0.4);
+}
+
+.glass-panel {
+    background: rgba(61, 25, 91, 0.4);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.control-center {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 3rem;
+    align-items: center;
+    position: relative;
+}
+
+.terminal-window {
+    background: rgba(13, 1, 19, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.data-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #94a3b8;
+    transition: all 0.3s ease;
+}
+
+.data-chip:hover {
+    background: rgba(0, 255, 133, 0.05);
+    border-color: rgba(0, 255, 133, 0.2);
+    color: #00ff85;
+}
+
+.live-value {
+    color: #fff;
+    font-variant-numeric: tabular-nums;
+    min-width: 4ch;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+.viz-card {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    padding: 1.5rem;
+    backdrop-filter: blur(8px);
+    position: relative;
+}
+
+.captain-card {
+    grid-column: span 2;
+    background: linear-gradient(135deg, rgba(61, 25, 91, 0.4) 0%, rgba(2, 6, 23, 0.6) 100%);
+    border: 1px solid rgba(0, 255, 133, 0.15);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.road-to-top {
+    grid-column: span 2;
+    background: rgba(13, 1, 19, 0.6);
+    border: 1px solid rgba(0, 255, 133, 0.1);
+    border-radius: 24px;
+    padding: 2.5rem;
+    position: relative;
+    overflow: hidden;
+    margin-top: 1rem;
+    backdrop-filter: blur(12px);
+}
+
+.road-to-top::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 0%, rgba(0, 255, 133, 0.05) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.progress-track {
+    height: 14px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 100px;
+    overflow: hidden;
+    margin: 1.5rem 0;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #3D195B 0%, #00FF85 100%);
+    width: 0;
+    border-radius: 100px;
+    transition: width 2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+    box-shadow: 0 0 20px rgba(0, 255, 133, 0.3);
+}
+
+.progress-fill::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 40px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4));
+    animation: progress-shimmer 2s infinite linear;
+}
+
+@keyframes progress-shimmer {
+    0% {
+        transform: translateX(-100%);
+    }
+
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+.rank-indicator {
+    font-family: 'Space Grotesk', sans-serif;
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+}
+
+.chart-path {
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
+    transition: stroke-dashoffset 2s ease-in-out;
+}
+
+.chart-path.active {
+    stroke-dashoffset: 0;
+}
+
+.chart-area {
+    fill: url(#chartGradient);
+    opacity: 0;
+    transition: opacity 1s 1s ease;
+}
+
+.active+.chart-area {
+    opacity: 0.15;
+}
+
+.chart-point {
+    fill: #00FF85;
+    stroke: #020617;
+    stroke-width: 2;
+    filter: drop-shadow(0 0 5px rgba(0, 255, 133, 0.8));
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.chart-point.active {
+    opacity: 1;
+}
+
+.chart-point-last {
+    animation: point-pulse 2s infinite;
+}
+
+@keyframes point-pulse {
+    0% {
+        r: 3;
+        opacity: 1;
+    }
+
+    50% {
+        r: 6;
+        opacity: 0.5;
+    }
+
+    100% {
+        r: 3;
+        opacity: 1;
+    }
+}
+
+.player-avatar-img {
+    width: 240px;
+    height: auto;
+    max-height: 100%;
+    object-fit: contain;
+    position: absolute;
+    right: -10px;
+    bottom: 0;
+    z-index: 5;
+    pointer-events: none;
+    filter: drop-shadow(-20px 0 30px rgba(0, 0, 0, 0.6));
+}
+
+.captain-card:hover .player-avatar-img {
+    transform: scale(1.05) translateX(-5px);
+}
+
+@media (max-width: 1024px) {
+    .control-center {
+        grid-template-columns: 1fr;
+    }
+
+    .road-to-top {
+        padding: 2rem;
+    }
+
+    .player-avatar-img {
+        display: none;
+    }
+}
+
+/* --- THE PRIME XI PROTOCOL V3 --- */
+#protocol {
+    background: #020617;
+    position: relative;
+    overflow: hidden;
+}
+
+#war-room {
+    background: #05010d;
+    position: relative;
+    overflow: hidden;
+}
+
+#war-room::before {
+    content: "";
+    position: absolute;
+    top: var(--mouse-y, 50%);
+    left: var(--mouse-x, 50%);
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(233, 0, 82, 0.15) 0%, transparent 70%);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 0;
+    mix-blend-mode: plus-lighter;
+    transition: top 0.1s ease-out, left 0.1s ease-out;
+}
+
+/* --- INSIDE THE WAR ROOM --- */
+.war-room-card {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+    backdrop-filter: blur(4px);
+}
+
+.war-room-card:hover {
+    border-color: rgba(233, 0, 82, 0.2);
+    background: rgba(255, 255, 255, 0.03);
+    transform: translateY(-5px);
+}
+
+.group\/grid:hover .war-room-card .blur-\[2px\],
+.group\/grid:hover .war-room-card .blur-\[4px\],
+.group\/grid:hover .war-room-card .blur-\[1px\],
+.group\/grid:hover .war-room-card .blur-\[3px\] {
+    filter: blur(0px);
+    opacity: 1;
+}
+
+.group\/grid:hover .war-room-card .blur-\[8px\],
+.group\/grid:hover .war-room-card .blur-\[6px\],
+.group\/grid:hover .war-room-card .blur-\[12px\],
+.group\/grid:hover .war-room-card .blur-\[10px\] {
+    filter: blur(2px);
+    opacity: 0.8;
+}
+
+#war-room .bg-surface\/90 {
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(233, 0, 82, 0.1);
+}
+
+@media (max-width: 1024px) {
+    #war-room .grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.radar-module {
+    position: relative;
+    box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.8);
+    transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.radar-module:hover {
+    transform: translateY(-5px) scale(1.01);
+}
+
+.radar-v3-label {
+    fill: #64748b;
+    font-size: 7px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+@media (max-width: 1024px) {
+    #protocol .grid {
+        grid-template-columns: 1fr;
+    }
+
+    .radar-module {
+        margin-top: 4rem;
+    }
+}
+
+#features {
+    background: linear-gradient(180deg, #020617 0%, #0d011d 50%, #020617 100%);
+    position: relative;
+    border-top: 1px solid rgba(0, 255, 133, 0.05);
+}
+
+#features::before {
+    content: "";
+    position: absolute;
+    top: var(--bg-glow-y, 50%);
+    left: var(--bg-glow-x, 50%);
+    width: 800px;
+    height: 800px;
+    background: radial-gradient(circle, rgba(61, 25, 91, 0.4) 0%, transparent 70%);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 0;
+    mix-blend-mode: plus-lighter;
+    transition: top 0.15s ease-out, left 0.1s ease-out;
+}
+
+#features::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
+    opacity: 0.04;
+    pointer-events: none;
+}
+
 @keyframes dash {
     to {
         stroke-dashoffset: 0;
+    }
+}
+
+.data-line {
+    stroke-dasharray: 6 4;
+    animation: data-line-pulse 2.5s ease-in-out infinite;
+}
+
+@keyframes data-line-pulse {
+
+    0%,
+    100% {
+        opacity: 0.6;
+        stroke-dashoffset: 0;
+    }
+
+    50% {
+        opacity: 1;
+        stroke-dashoffset: -20;
+    }
+}
+
+.stat-node>div {
+    animation: node-appear 0.8s ease-out both;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stat-node>div:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 32px rgba(0, 255, 133, 0.15);
+}
+
+@keyframes node-appear {
+    from {
+        opacity: 0;
+        transform: scale(0.85);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+#ball-canvas {
+    transition: filter 0.5s ease;
+}
+
+@media (max-width: 767px) {
+    #ball-field {
+        flex-direction: column;
+        gap: 2rem;
+        min-height: auto !important;
+    }
+
+    .stat-node {
+        position: static !important;
+        transform: none !important;
+    }
+
+    #ball-field {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    #ball-field>svg {
+        display: none;
+    }
+
+    .stat-node {
+        width: 45%;
+    }
+
+    #ball-field .stat-node:nth-child(3),
+    #ball-field .stat-node:nth-child(4) {
+        position: relative !important;
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
+    }
+
+    #ball-field .stat-node:last-child {
+        position: relative !important;
+        bottom: auto !important;
+        left: auto !important;
+        transform: none !important;
     }
 }
