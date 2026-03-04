@@ -13,3 +13,14 @@
 - [x] Scroll Counters para la sección de Stats (2.5M+, 98%, etc.)
 - [x] Chart Scroll Reveal (activar animación del gráfico al ser visible)
 - [x] Confetti Burst (verde/púrpura) al hacer click en el CTA principal
+
+## Fase 5: Conectividad y Datos (Backend)
+- [x] Conexión con API FPL (Bootstrap Static)
+- [x] Diseño de esquema relacional en Supabase
+- [x] Migración de tablas (Elements, Teams, Fixtures, etc.)
+- [ ] Script de Ingesta Automática (Sync API -> DB)
+
+## Fase 6: Inteligencia y Dashboard
+- [ ] Desarrollo de Algoritmo de Optimización (Once Ideal)
+- [ ] Integración de Datos Reales en el Pitch View
+- [ ] Sistema de Autenticación de Mánagers
