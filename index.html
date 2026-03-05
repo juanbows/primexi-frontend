@@ -118,6 +118,105 @@
             list-style: none;
         }
 
+        body.pp-is-loading {
+            overflow: hidden;
+        }
+
+        .pp-page-loader {
+            position: fixed;
+            inset: 0;
+            z-index: 120;
+            display: grid;
+            place-items: center;
+            overflow: hidden;
+            background: #020617;
+            transition: opacity 0.45s ease, visibility 0.45s ease;
+        }
+
+        .pp-page-loader::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(180deg, rgba(2, 6, 23, 0.6) 0%, rgba(2, 6, 23, 0.85) 100%),
+                radial-gradient(circle at 20% 20%, rgba(0, 255, 133, 0.12), transparent 38%),
+                radial-gradient(circle at 80% 80%, rgba(4, 245, 255, 0.12), transparent 42%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .pp-page-loader.is-hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .pp-page-loader__video {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center center;
+            filter: saturate(1.08) brightness(0.55);
+            z-index: 0;
+        }
+
+        .pp-page-loader__content {
+            width: min(420px, 86vw);
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .pp-page-loader__brand {
+            margin: 0;
+            color: #00ff85;
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.24em;
+            text-transform: uppercase;
+        }
+
+        .pp-page-loader__title {
+            margin: 0.9rem 0 1rem;
+            color: #e2e8f0;
+            font-family: "Space Grotesk", sans-serif;
+            font-size: clamp(1.1rem, 3.2vw, 1.45rem);
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        .pp-page-loader__track {
+            height: 0.45rem;
+            width: 100%;
+            border-radius: 999px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.16);
+            border: 1px solid rgba(255, 255, 255, 0.22);
+        }
+
+        .pp-page-loader__bar {
+            display: block;
+            height: 100%;
+            width: 0%;
+            border-radius: inherit;
+            background: linear-gradient(90deg, #00ff85 0%, #04f5ff 100%);
+            box-shadow: 0 0 16px rgba(0, 255, 133, 0.5);
+            transition: width 0.2s ease;
+        }
+
+        .pp-page-loader__progress {
+            margin: 0.8rem 0 0;
+            color: #cbd5e1;
+            font-size: 0.8rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            font-family: "Space Grotesk", sans-serif;
+        }
+
         :root {
             --pp-accent: #00ff85;
         }
@@ -373,42 +472,33 @@
     </style>
 </head>
 
-<body class="bg-pl-dark text-slate-100 font-body overflow-x-hidden selection:bg-accent-green selection:text-primary">
+<body
+    class="pp-is-loading bg-pl-dark text-slate-100 font-body overflow-x-hidden selection:bg-accent-green selection:text-primary">
+
+    <div id="pp-page-loader" class="pp-page-loader" role="status" aria-live="polite" aria-label="Cargando PRIME XI">
+        <video id="pp-page-loader-video" class="pp-page-loader__video" autoplay muted loop playsinline preload="auto"
+            aria-hidden="true">
+            <source src="vids/overlay_carga.mp4" type="video/mp4" />
+        </video>
+        <div class="pp-page-loader__content">
+            <p class="pp-page-loader__brand">PRIME XI</p>
+            <p class="pp-page-loader__title">Preparando experiencia</p>
+            <div class="pp-page-loader__track" aria-hidden="true">
+                <span id="pp-page-loader-bar" class="pp-page-loader__bar"></span>
+            </div>
+            <p id="pp-page-loader-progress" class="pp-page-loader__progress">0%</p>
+        </div>
+    </div>
 
     <div class="relative flex min-h-screen w-full flex-col">
 
         <!-- Navigation -->
         <header
-            class="fixed top-0 w-full z-50 glass-panel border-b border-white/5 px-6 py-4 transition-all duration-300">
+            class="fixed top-0 w-full z-50 glass-panel border-b border-white/5 px-6 py-3 transition-all duration-300">
             <div class="mx-auto max-w-7xl flex items-center justify-between">
                 <a href="/" class="flex items-center gap-4 group">
-                    <div class="relative flex items-center justify-center">
-                        <!-- High-Detail Monstrous Kraken SVG -->
-                        <!-- Advanced Monstrous Kraken SVG -->
-                        <svg class="w-12 h-12 transform transition-all duration-500 group-hover:scale-110"
-                            viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <!-- Background Tentacles (Thick/Curved) -->
-                            <path d="M10 50C5 60 5 80 15 90M90 50C95 60 95 80 85 90" stroke="#00FF85" stroke-width="4"
-                                stroke-linecap="round" opacity="0.3" />
-                            <!-- Main Hood -->
-                            <path d="M50 2L25 28L25 55C25 70 35 82 50 88C65 82 75 70 75 55L75 28L50 2Z" fill="#1A0B2E"
-                                stroke="#00FF85" stroke-width="3" />
-                            <path d="M50 2L35 25V48L50 58L65 48V25L50 2Z" fill="#3D195B" opacity="0.5" />
-                            <!-- Sharp Eyes -->
-                            <path d="M34 38L46 44L44 48L32 46L34 38Z" fill="#00FF85" class="animate-pulse" />
-                            <path d="M66 38L54 44L56 48L68 46L66 38Z" fill="#00FF85" class="animate-pulse" />
-                            <!-- Primary Tentacles (Thick/Curved) -->
-                            <path d="M25 55C15 65 10 85 25 95M75 55C85 65 90 85 75 95" stroke="#00FF85" stroke-width="4"
-                                stroke-linecap="round" />
-                            <path d="M40 85C35 90 30 98 40 100M60 85C65 90 70 98 60 100" stroke="#00FF85"
-                                stroke-width="4" stroke-linecap="round" />
-                        </svg>
-                        <div
-                            class="absolute inset-0 bg-accent-green/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity">
-                        </div>
-                    </div>
-                    <span class="text-white text-2xl font-display font-black tracking-tighter leading-none">PRIME<span
-                            class="text-accent-green">XI</span></span>
+                    <img id="pp-header-logo" src="logos/logo_header.png" alt="Prime XI"
+                        class="h-10 w-auto sm:h-11 transition-opacity group-hover:opacity-90" />
                 </a>
                 <nav class="hidden md:flex items-center gap-8">
                     <a class="text-slate-400 hover:text-accent-green text-sm font-medium transition-colors"

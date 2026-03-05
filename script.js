@@ -61,6 +61,27 @@ function clamp(value, min, max) {
     return Math.min(max, Math.max(min, value));
 }
 
+function setPageLoaderProgress(percent) {
+    if (!heroDom.pageLoaderProgress || !heroDom.pageLoaderBar) {
+        return;
+    }
+
+    const safePercent = clamp(Math.round(percent), 0, 100);
+    heroDom.pageLoaderProgress.textContent = `${safePercent}%`;
+    heroDom.pageLoaderBar.style.width = `${safePercent}%`;
+}
+
+function hidePageLoader() {
+    document.body.classList.remove("pp-is-loading");
+    if (heroDom.pageLoaderVideo) {
+        heroDom.pageLoaderVideo.pause();
+    }
+    if (!heroDom.pageLoader) {
+        return;
+    }
+    heroDom.pageLoader.classList.add("is-hidden");
+}
+
 function initHeaderScroll() {
     const header = document.querySelector("header");
     if (!header) {
@@ -76,6 +97,31 @@ function initHeaderScroll() {
             header.style.borderBottomColor = "rgba(255, 255, 255, 0.05)";
         }
     });
+}
+
+function initHeaderLogoAutoSize() {
+    const header = document.querySelector("header");
+    const logo = document.getElementById("pp-header-logo");
+    if (!header || !logo) {
+        return;
+    }
+
+    const syncLogoSize = () => {
+        const headerHeight = header.getBoundingClientRect().height;
+        const targetHeight = clamp(Math.round(headerHeight * 0.62), 36, 64);
+        logo.style.height = `${targetHeight}px`;
+    };
+
+    syncLogoSize();
+
+    if ("ResizeObserver" in window) {
+        const observer = new ResizeObserver(syncLogoSize);
+        observer.observe(header);
+    } else {
+        window.addEventListener("resize", syncLogoSize);
+    }
+
+    window.addEventListener("load", syncLogoSize);
 }
 
 function initSmoothScroll() {
@@ -365,6 +411,10 @@ async function switchVariant(nextVariantIndex) {
 }
 
 function cacheHeroDomNodes() {
+    heroDom.pageLoader = document.getElementById("pp-page-loader");
+    heroDom.pageLoaderProgress = document.getElementById("pp-page-loader-progress");
+    heroDom.pageLoaderBar = document.getElementById("pp-page-loader-bar");
+    heroDom.pageLoaderVideo = document.getElementById("pp-page-loader-video");
     heroDom.heroSection = document.getElementById("hero");
     heroDom.heroFrame = document.getElementById("pp-hero-frame");
     heroDom.heroText = document.getElementById("pp-hero-text");
@@ -419,20 +469,35 @@ function bindHeroInteractions() {
     window.addEventListener("resize", () => requestHeroRender(true));
 }
 
+function initPageLoaderVideo() {
+    if (!heroDom.pageLoaderVideo) {
+        return;
+    }
+
+    const playPromise = heroDom.pageLoaderVideo.play();
+    if (playPromise && typeof playPromise.catch === "function") {
+        playPromise.catch(() => null);
+    }
+}
+
 async function initParallaxHero() {
     if (!cacheHeroDomNodes()) {
+        hidePageLoader();
         return;
     }
 
     heroState.variants = sanitizeVariants(HERO_CONFIG.variants);
     const initialVariant = heroState.variants[heroState.activeVariant];
 
+    setPageLoaderProgress(0);
+    initPageLoaderVideo();
     applyThemeColor(initialVariant.themeColor || HERO_CONFIG.defaultThemeColor);
     fadeHeroTextToVariant(initialVariant);
     showVariantLoading(true, "Cargando 0%");
 
     await preloadInitialFrames(heroState.activeVariant, (loaded, total) => {
         const percent = Math.round((loaded / total) * 100);
+        setPageLoaderProgress(percent);
         showVariantLoading(true, `Cargando ${percent}%`);
     });
 
@@ -440,11 +505,14 @@ async function initParallaxHero() {
     requestHeroRender(true);
     bindHeroInteractions();
     showVariantLoading(false);
+    setPageLoaderProgress(100);
+    window.setTimeout(hidePageLoader, 180);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
     initHeaderScroll();
+    initHeaderLogoAutoSize();
     initSmoothScroll();
     initSectionReveal();
-    initParallaxHero();
+    initParallaxHero().catch(() => hidePageLoader());
 });
