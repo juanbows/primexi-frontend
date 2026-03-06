@@ -548,48 +548,13 @@
             z-index: 1;
         }
 
-        /* ── Glass Divider between text & chart ─────────────── */
-        .feat-glass-divider {
-            position: relative;
-            margin: 18px -26px 0;
-            padding: 0;
-            height: 36px;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.02) 100%);
-            backdrop-filter: blur(16px) saturate(1.4);
-            -webkit-backdrop-filter: blur(16px) saturate(1.4);
-            border-top: 1px solid rgba(255, 255, 255, 0.08);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-            overflow: hidden;
-        }
 
-        .feat-glass-divider::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 10%;
-            right: 10%;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12), transparent);
-        }
-
-        .feat-glass-divider--green {
-            background: linear-gradient(135deg, rgba(0, 255, 133, 0.05) 0%, rgba(0, 255, 133, 0.015) 100%);
-        }
-
-        .feat-glass-divider--pink {
-            background: linear-gradient(135deg, rgba(233, 0, 82, 0.05) 0%, rgba(233, 0, 82, 0.015) 100%);
-        }
-
-        .feat-glass-divider--cyan {
-            background: linear-gradient(135deg, rgba(4, 245, 255, 0.05) 0%, rgba(4, 245, 255, 0.015) 100%);
-        }
 
         .feat-chart-wrap {
-            margin-top: 0;
+            margin-top: 20px;
             padding: 10px;
             background: rgba(255, 255, 255, 0.025);
             border: 1px solid rgba(255, 255, 255, 0.05);
-            border-top: none;
             border-radius: 12px;
         }
 
@@ -765,7 +730,7 @@
         }
 
         .hero-gradient {
-            background: linear-gradient(180deg, rgba(61, 25, 91, 0.85) 0%, rgba(2, 6, 23, 0.95) 100%);
+            background: none;
         }
 
         .pitch-gradient {
@@ -989,7 +954,6 @@
                                 </h3>
                                 <p class="feat-desc">Proyecciones con intervalos de confianza estadística — xG, xA,
                                     fixture difficulty y forma reciente.</p>
-                                <div class="feat-glass-divider feat-glass-divider--green"></div>
                                 <div class="feat-chart-wrap">
                                     <svg viewBox="0 0 160 120" class="feat-svg" fill="none">
                                         <polygon points="80,10 142,45 142,90 80,110 18,90 18,45" fill="none"
@@ -1069,7 +1033,6 @@
                                 <h3 class="feat-title">Transferencias<br><span style="color:#E90052">Óptimas</span></h3>
                                 <p class="feat-desc">El solver evalúa estrategias a 5 jornadas contemplando hits, chips
                                     diferidos y valor de mercado.</p>
-                                <div class="feat-glass-divider feat-glass-divider--pink"></div>
                                 <div class="feat-chart-wrap">
                                     <svg viewBox="0 0 160 90" class="feat-svg" fill="none">
                                         <line x1="0" y1="22" x2="160" y2="22" stroke="rgba(255,255,255,0.04)"
@@ -1140,7 +1103,6 @@
                                 <h3 class="feat-title">Capitanes<br><span style="color:#04F5FF">de Élite</span></h3>
                                 <p class="feat-desc">Capitán y vice óptimos según probabilidades de haul. Nunca pierdas
                                     los puntos dobles clave.</p>
-                                <div class="feat-glass-divider feat-glass-divider--cyan"></div>
                                 <div class="feat-chart-wrap">
                                     <svg viewBox="0 0 160 105" class="feat-svg" fill="none">
                                         <circle cx="80" cy="50" r="38" stroke="rgba(255,255,255,0.05)"
