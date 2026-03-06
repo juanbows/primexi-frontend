@@ -181,20 +181,43 @@
 
         /* ─── Dynamic Section Title (Domina tu Liga) ──────────── */
         .dtl-eyebrow {
-            display: inline-flex; align-items: center; gap: 10px;
-            font-size: 10px; font-weight: 800; letter-spacing: 0.25em;
-            color: rgba(0,255,133,0.7);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.25em;
+            color: rgba(0, 255, 133, 0.7);
             font-family: 'JetBrains Mono', monospace;
             margin-bottom: 20px;
             text-transform: uppercase;
         }
+
         .dtl-dot {
-            width: 5px; height: 5px; border-radius: 50%;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
             background: #00FF85;
             animation: dotBlink 1.5s ease-in-out infinite;
         }
-        .dtl-dot:last-child { animation-delay: 0.75s; }
-        @keyframes dotBlink { 0%,100%{opacity:0.3;transform:scale(1)} 50%{opacity:1;transform:scale(1.5)} }
+
+        .dtl-dot:last-child {
+            animation-delay: 0.75s;
+        }
+
+        @keyframes dotBlink {
+
+            0%,
+            100% {
+                opacity: 0.3;
+                transform: scale(1)
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.5)
+            }
+        }
 
         .dtl-h2 {
             font-size: clamp(2.8rem, 7vw, 5.5rem);
@@ -206,61 +229,102 @@
             margin-bottom: 0;
             cursor: default;
         }
+
         .dtl-letter {
             display: inline-block;
             opacity: 0;
             transform: translateY(40px) rotateX(-60deg);
-            transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.34,1.56,0.64,1);
+            transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
+
         .dtl-letter.in {
             opacity: 1;
             transform: translateY(0) rotateX(0);
         }
-        .dtl-word { color: #fff; }
+
+        .dtl-word {
+            color: #fff;
+        }
+
         .dtl-word-accent .dtl-letter {
             background: linear-gradient(90deg, #00FF85 0%, #04F5FF 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
+
         .dtl-h2:hover .dtl-word:not(.dtl-word-accent) .dtl-letter {
             animation: letterGlitch 0.4s ease forwards;
         }
+
         @keyframes letterGlitch {
-            0%  { transform: translateX(0); }
-            20% { transform: translateX(-3px) skewX(-5deg); color: #04F5FF; }
-            40% { transform: translateX(3px) skewX(5deg); color: #E90052; }
-            60% { transform: translateX(-1px); color: #00FF85; }
-            80% { transform: translateX(1px); }
-            100%{ transform: translateX(0); color: inherit; }
+            0% {
+                transform: translateX(0);
+            }
+
+            20% {
+                transform: translateX(-3px) skewX(-5deg);
+                color: #04F5FF;
+            }
+
+            40% {
+                transform: translateX(3px) skewX(5deg);
+                color: #E90052;
+            }
+
+            60% {
+                transform: translateX(-1px);
+                color: #00FF85;
+            }
+
+            80% {
+                transform: translateX(1px);
+            }
+
+            100% {
+                transform: translateX(0);
+                color: inherit;
+            }
         }
+
         .dtl-bar-wrap {
             position: relative;
-            width: 100%; max-width: 300px;
+            width: 100%;
+            max-width: 300px;
             margin: 18px auto 28px;
             height: 3px;
         }
+
         .dtl-bar {
             height: 3px;
             background: linear-gradient(90deg, #00FF85 0%, #04F5FF 50%, #E90052 100%);
             border-radius: 3px;
             transform: scaleX(0);
             transform-origin: left;
-            transition: transform 1s cubic-bezier(0.34,1.56,0.64,1) 0.6s;
+            transition: transform 1s cubic-bezier(0.34, 1.56, 0.64, 1) 0.6s;
         }
-        .dtl-bar.in { transform: scaleX(1); }
+
+        .dtl-bar.in {
+            transform: scaleX(1);
+        }
+
         .dtl-bar-glow {
-            position: absolute; inset: -4px 0;
-            background: linear-gradient(90deg, rgba(0,255,133,0.3) 0%, rgba(4,245,255,0.2) 50%, rgba(233,0,82,0.2) 100%);
+            position: absolute;
+            inset: -4px 0;
+            background: linear-gradient(90deg, rgba(0, 255, 133, 0.3) 0%, rgba(4, 245, 255, 0.2) 50%, rgba(233, 0, 82, 0.2) 100%);
             filter: blur(8px);
             border-radius: 4px;
             opacity: 0;
             transition: opacity 0.8s ease 1.4s;
         }
-        .dtl-bar-glow.in { opacity: 1; }
+
+        .dtl-bar-glow.in {
+            opacity: 1;
+        }
+
         .dtl-sub {
             font-size: 1.05rem;
-            color: rgba(148,163,184,0.8);
+            color: rgba(148, 163, 184, 0.8);
             max-width: 520px;
             margin: 0 auto;
             line-height: 1.6;
@@ -268,68 +332,315 @@
 
 
         /* ─── 3D Feature Cards ──────────────────────────────────── */
-        .feat-3d-wrap { perspective: 1000px; }
+        .feat-3d-wrap {
+            perspective: 1000px;
+        }
 
         .feat-3d-card {
             position: relative;
-            background: linear-gradient(145deg, rgba(15,10,30,0.97) 0%, rgba(8,4,18,1) 100%);
-            border: 1px solid rgba(255,255,255,0.07);
+            background: linear-gradient(145deg, rgba(15, 10, 30, 0.97) 0%, rgba(8, 4, 18, 1) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.07);
             border-radius: 20px;
             padding: 28px 26px 22px;
             overflow: hidden;
             transition: transform 0.12s ease, box-shadow 0.3s ease, border-color 0.3s ease;
             transform-style: preserve-3d;
             will-change: transform;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.55), 0 1px 0 rgba(255,255,255,0.04) inset;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.55), 0 1px 0 rgba(255, 255, 255, 0.04) inset;
         }
-        .feat-3d-card:hover { border-color: rgba(0,255,133,0.25); box-shadow: 0 24px 64px rgba(0,0,0,0.65), 0 0 40px rgba(0,255,133,0.08); }
-        .feat-3d-card--pink:hover { border-color: rgba(233,0,82,0.3); box-shadow: 0 24px 64px rgba(0,0,0,0.65), 0 0 40px rgba(233,0,82,0.1); }
-        .feat-3d-card--cyan:hover { border-color: rgba(4,245,255,0.25); box-shadow: 0 24px 64px rgba(0,0,0,0.65), 0 0 40px rgba(4,245,255,0.08); }
 
-        .feat-holo { position:absolute; inset:0; border-radius:20px; background:linear-gradient(135deg,transparent 0%,rgba(0,255,133,0.04) 30%,rgba(4,245,255,0.04) 50%,rgba(233,0,82,0.03) 70%,transparent 100%); background-size:200% 200%; animation:holoShift 6s ease infinite; pointer-events:none; }
-        .feat-holo--pink { background:linear-gradient(135deg,transparent 0%,rgba(233,0,82,0.06) 30%,rgba(255,200,0,0.03) 50%,rgba(233,0,82,0.04) 70%,transparent 100%); background-size:200% 200%; }
-        .feat-holo--cyan { background:linear-gradient(135deg,transparent 0%,rgba(4,245,255,0.05) 30%,rgba(0,255,133,0.03) 50%,rgba(4,245,255,0.05) 70%,transparent 100%); background-size:200% 200%; }
-        @keyframes holoShift { 0%{background-position:0% 0%} 50%{background-position:100% 100%} 100%{background-position:0% 0%} }
+        .feat-3d-card:hover {
+            border-color: rgba(0, 255, 133, 0.25);
+            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.65), 0 0 40px rgba(0, 255, 133, 0.08);
+        }
 
-        .feat-corner-glow { position:absolute; inset:0; pointer-events:none; border-radius:20px; }
+        .feat-3d-card--pink:hover {
+            border-color: rgba(233, 0, 82, 0.3);
+            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.65), 0 0 40px rgba(233, 0, 82, 0.1);
+        }
 
-        .feat-orb { position:absolute; border-radius:50%; pointer-events:none; animation:orbFloat 5s ease-in-out infinite; }
-        .feat-orb-2 { animation-delay:-2.5s; animation-duration:7s; }
-        @keyframes orbFloat { 0%,100%{transform:translateY(0) scale(1)} 50%{transform:translateY(-12px) scale(1.08)} }
+        .feat-3d-card--cyan:hover {
+            border-color: rgba(4, 245, 255, 0.25);
+            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.65), 0 0 40px rgba(4, 245, 255, 0.08);
+        }
 
-        .feat-icon-wrap { position:relative; width:52px; height:52px; border-radius:14px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); display:flex; align-items:center; justify-content:center; margin-bottom:16px; }
-        .feat-icon-ring { position:absolute; inset:-6px; border-radius:18px; border:1px solid rgba(0,255,133,0.2); animation:ringPulse 3s ease-in-out infinite; }
-        @keyframes ringPulse { 0%,100%{opacity:0.4;transform:scale(1)} 50%{opacity:1;transform:scale(1.05)} }
+        .feat-holo {
+            position: absolute;
+            inset: 0;
+            border-radius: 20px;
+            background: linear-gradient(135deg, transparent 0%, rgba(0, 255, 133, 0.04) 30%, rgba(4, 245, 255, 0.04) 50%, rgba(233, 0, 82, 0.03) 70%, transparent 100%);
+            background-size: 200% 200%;
+            animation: holoShift 6s ease infinite;
+            pointer-events: none;
+        }
 
-        .feat-chip { display:inline-block; font-size:9px; font-weight:800; letter-spacing:0.12em; padding:3px 10px; border-radius:999px; border:1px solid; margin-bottom:10px; }
-        .feat-chip-green { background:rgba(0,255,133,0.1); border-color:rgba(0,255,133,0.3); color:#00FF85; }
+        .feat-holo--pink {
+            background: linear-gradient(135deg, transparent 0%, rgba(233, 0, 82, 0.06) 30%, rgba(255, 200, 0, 0.03) 50%, rgba(233, 0, 82, 0.04) 70%, transparent 100%);
+            background-size: 200% 200%;
+        }
 
-        .feat-title { font-size:1.3rem; font-weight:800; color:#fff; line-height:1.25; margin-bottom:8px; font-family:var(--font-display,'Rajdhani',sans-serif); }
-        .feat-desc { font-size:0.8rem; color:rgba(148,163,184,0.75); line-height:1.55; }
+        .feat-holo--cyan {
+            background: linear-gradient(135deg, transparent 0%, rgba(4, 245, 255, 0.05) 30%, rgba(0, 255, 133, 0.03) 50%, rgba(4, 245, 255, 0.05) 70%, transparent 100%);
+            background-size: 200% 200%;
+        }
 
-        .feat-chart-wrap { margin-top:20px; padding:10px; background:rgba(255,255,255,0.025); border:1px solid rgba(255,255,255,0.05); border-radius:12px; }
-        .feat-svg { width:100%; height:auto; }
+        @keyframes holoShift {
+            0% {
+                background-position: 0% 0%
+            }
 
-        .feat-radar-fill { animation:radarPulse 4s ease-in-out infinite; }
-        @keyframes radarPulse { 0%,100%{opacity:0.8} 50%{opacity:1;filter:drop-shadow(0 0 6px rgba(0,255,133,0.6))} }
-        .feat-radar-dot { animation:dotPop 2s ease-in-out infinite; }
-        @keyframes dotPop { 0%,100%{r:3} 50%{r:4.5} }
+            50% {
+                background-position: 100% 100%
+            }
 
-        .feat-line-anim { stroke-dasharray:300; stroke-dashoffset:300; animation:lineDraw 2s ease forwards 0.5s; }
-        @keyframes lineDraw { to{stroke-dashoffset:0} }
+            100% {
+                background-position: 0% 0%
+            }
+        }
 
-        .feat-arc { transform-origin:80px 50px; transform:rotate(-90deg); opacity:0; animation:arcIn 1s cubic-bezier(0.34,1.56,0.64,1) forwards; }
-        .feat-arc:nth-child(2){animation-delay:0.1s} .feat-arc:nth-child(3){animation-delay:0.35s} .feat-arc:nth-child(4){animation-delay:0.6s}
-        @keyframes arcIn { to{opacity:1} }
+        .feat-corner-glow {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            border-radius: 20px;
+        }
 
-        .feat-stat-row { display:flex; align-items:center; justify-content:space-around; margin-top:16px; padding-top:14px; border-top:1px solid rgba(255,255,255,0.06); }
-        .feat-stat { text-align:center; }
-        .feat-stat-val { display:block; font-size:1rem; font-weight:800; font-family:monospace; line-height:1; }
-        .feat-stat-lbl { display:block; font-size:9px; color:rgba(148,163,184,0.5); text-transform:uppercase; letter-spacing:0.08em; margin-top:3px; }
-        .feat-stat-divider { width:1px; height:28px; background:rgba(255,255,255,0.07); }
+        .feat-orb {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: orbFloat 5s ease-in-out infinite;
+        }
 
-        .feat-featured-badge { position:absolute; top:16px; right:16px; font-size:9px; font-weight:900; letter-spacing:0.15em; padding:4px 10px; background:rgba(233,0,82,0.15); border:1px solid rgba(233,0,82,0.35); border-radius:999px; color:#E90052; animation:badgePulse 2s ease-in-out infinite; }
-        @keyframes badgePulse { 0%,100%{box-shadow:0 0 0 0 rgba(233,0,82,0)} 50%{box-shadow:0 0 12px 2px rgba(233,0,82,0.25)} }
+        .feat-orb-2 {
+            animation-delay: -2.5s;
+            animation-duration: 7s;
+        }
+
+        @keyframes orbFloat {
+
+            0%,
+            100% {
+                transform: translateY(0) scale(1)
+            }
+
+            50% {
+                transform: translateY(-12px) scale(1.08)
+            }
+        }
+
+        .feat-icon-wrap {
+            position: relative;
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+
+        .feat-icon-ring {
+            position: absolute;
+            inset: -6px;
+            border-radius: 18px;
+            border: 1px solid rgba(0, 255, 133, 0.2);
+            animation: ringPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes ringPulse {
+
+            0%,
+            100% {
+                opacity: 0.4;
+                transform: scale(1)
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.05)
+            }
+        }
+
+        .feat-chip {
+            display: inline-block;
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            padding: 3px 10px;
+            border-radius: 999px;
+            border: 1px solid;
+            margin-bottom: 10px;
+        }
+
+        .feat-chip-green {
+            background: rgba(0, 255, 133, 0.1);
+            border-color: rgba(0, 255, 133, 0.3);
+            color: #00FF85;
+        }
+
+        .feat-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: #fff;
+            line-height: 1.25;
+            margin-bottom: 8px;
+            font-family: var(--font-display, 'Rajdhani', sans-serif);
+        }
+
+        .feat-desc {
+            font-size: 0.8rem;
+            color: rgba(148, 163, 184, 0.75);
+            line-height: 1.55;
+        }
+
+        .feat-chart-wrap {
+            margin-top: 20px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.025);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+        }
+
+        .feat-svg {
+            width: 100%;
+            height: auto;
+        }
+
+        .feat-radar-fill {
+            animation: radarPulse 4s ease-in-out infinite;
+        }
+
+        @keyframes radarPulse {
+
+            0%,
+            100% {
+                opacity: 0.8
+            }
+
+            50% {
+                opacity: 1;
+                filter: drop-shadow(0 0 6px rgba(0, 255, 133, 0.6))
+            }
+        }
+
+        .feat-radar-dot {
+            animation: dotPop 2s ease-in-out infinite;
+        }
+
+        @keyframes dotPop {
+
+            0%,
+            100% {
+                r: 3
+            }
+
+            50% {
+                r: 4.5
+            }
+        }
+
+        .feat-line-anim {
+            stroke-dasharray: 300;
+            stroke-dashoffset: 300;
+            animation: lineDraw 2s ease forwards 0.5s;
+        }
+
+        @keyframes lineDraw {
+            to {
+                stroke-dashoffset: 0
+            }
+        }
+
+        .feat-arc {
+            transform-origin: 80px 50px;
+            transform: rotate(-90deg);
+            opacity: 0;
+            animation: arcIn 1s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        .feat-arc:nth-child(2) {
+            animation-delay: 0.1s
+        }
+
+        .feat-arc:nth-child(3) {
+            animation-delay: 0.35s
+        }
+
+        .feat-arc:nth-child(4) {
+            animation-delay: 0.6s
+        }
+
+        @keyframes arcIn {
+            to {
+                opacity: 1
+            }
+        }
+
+        .feat-stat-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            margin-top: 16px;
+            padding-top: 14px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .feat-stat {
+            text-align: center;
+        }
+
+        .feat-stat-val {
+            display: block;
+            font-size: 1rem;
+            font-weight: 800;
+            font-family: monospace;
+            line-height: 1;
+        }
+
+        .feat-stat-lbl {
+            display: block;
+            font-size: 9px;
+            color: rgba(148, 163, 184, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-top: 3px;
+        }
+
+        .feat-stat-divider {
+            width: 1px;
+            height: 28px;
+            background: rgba(255, 255, 255, 0.07);
+        }
+
+        .feat-featured-badge {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            font-size: 9px;
+            font-weight: 900;
+            letter-spacing: 0.15em;
+            padding: 4px 10px;
+            background: rgba(233, 0, 82, 0.15);
+            border: 1px solid rgba(233, 0, 82, 0.35);
+            border-radius: 999px;
+            color: #E90052;
+            animation: badgePulse 2s ease-in-out infinite;
+        }
+
+        @keyframes badgePulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(233, 0, 82, 0)
+            }
+
+            50% {
+                box-shadow: 0 0 12px 2px rgba(233, 0, 82, 0.25)
+            }
+        }
 
 
         ::-webkit-scrollbar {
@@ -485,8 +796,7 @@
                 <nav class="hidden md:flex items-center gap-8">
                     <a class="text-slate-400 hover:text-accent-green text-sm font-medium transition-colors"
                         href="#features">Funciones</a>
-                    <a class="text-slate-400 hover:text-accent-green text-sm font-medium transition-colors"
-                        href="#how-it-works">Metodología</a>
+
                     <a class="text-slate-400 hover:text-accent-green text-sm font-medium transition-colors"
                         href="#stats">Resultados</a>
                 </nav>
@@ -737,7 +1047,9 @@
                         <!-- Main animated title -->
                         <h2 class="dtl-h2" id="dtl-h2" aria-label="Domina tu Liga">
                             <span class="dtl-word" id="dtl-w1">
-                                <span class="dtl-letter">D</span><span class="dtl-letter">O</span><span class="dtl-letter">M</span><span class="dtl-letter">I</span><span class="dtl-letter">N</span><span class="dtl-letter">A</span>
+                                <span class="dtl-letter">D</span><span class="dtl-letter">O</span><span
+                                    class="dtl-letter">M</span><span class="dtl-letter">I</span><span
+                                    class="dtl-letter">N</span><span class="dtl-letter">A</span>
                             </span>
                             <span class="dtl-space">&nbsp;</span>
                             <span class="dtl-word dtl-word-accent" id="dtl-w2">
@@ -745,7 +1057,8 @@
                             </span>
                             <span class="dtl-space">&nbsp;</span>
                             <span class="dtl-word" id="dtl-w3">
-                                <span class="dtl-letter">L</span><span class="dtl-letter">I</span><span class="dtl-letter">G</span><span class="dtl-letter">A</span>
+                                <span class="dtl-letter">L</span><span class="dtl-letter">I</span><span
+                                    class="dtl-letter">G</span><span class="dtl-letter">A</span>
                             </span>
                         </h2>
 
@@ -755,7 +1068,8 @@
                             <div class="dtl-bar-glow" id="dtl-bar-glow"></div>
                         </div>
 
-                        <p class="dtl-sub">Desbloquea el poder de la IA para tomar <strong style="color:#00FF85">mejores decisiones</strong> cada jornada.</p>
+                        <p class="dtl-sub">Desbloquea el poder de la IA para tomar <strong style="color:#00FF85">mejores
+                                decisiones</strong> cada jornada.</p>
                     </div>
                     <!-- 3D Feature Cards Grid -->
                     <div class="grid md:grid-cols-3 gap-8 items-start" id="feat-grid">
@@ -1001,72 +1315,7 @@
                 </div>
             </section>
 
-            <!-- How It Works -->
-            <section id="how-it-works" class="relative py-24 px-6 bg-pl-dark">
-                <div class="max-w-7xl mx-auto">
-                    <div class="text-center mb-20">
-                        <span
-                            class="text-accent-green text-sm font-bold uppercase tracking-[0.3em] font-display mb-4 block">Metodología</span>
-                        <h2 class="text-4xl font-display font-bold text-white md:text-5xl">Precisión Matemática</h2>
-                        <div class="mt-4 h-1 w-20 rounded-full bg-accent-green mx-auto opacity-50"></div>
-                    </div>
-                    <div class="grid gap-12 md:grid-cols-3">
-                        <!-- Step 1 -->
-                        <div class="group relative p-8">
-                            <div
-                                class="absolute -left-4 -top-8 font-display text-[10rem] font-bold text-white/[0.03] pointer-events-none">
-                                01</div>
-                            <div
-                                class="relative z-10 mb-8 flex h-16 w-16 items-center justify-center rounded-2xl bg-surface text-accent-green ring-1 ring-white/10 shadow-xl group-hover:scale-110 transition-transform">
-                                <span class="material-symbols-outlined text-3xl">link</span>
-                            </div>
-                            <h3 class="text-2xl font-display font-bold text-white mb-4">Conecta tu ID</h3>
-                            <p class="text-slate-400 leading-relaxed lowercase">Ingresa tu Team ID de FPL y nosotros
-                                importamos tu plantilla, presupuesto y chips al instante.</p>
-                        </div>
-                        <!-- Step 2 -->
-                        <div class="group relative p-8">
-                            <div
-                                class="absolute -left-4 -top-8 font-display text-[10rem] font-bold text-white/[0.03] pointer-events-none">
-                                02</div>
-                            <div
-                                class="relative z-10 mb-8 flex h-16 w-16 items-center justify-center rounded-2xl bg-surface text-secondary ring-1 ring-white/10 shadow-xl group-hover:scale-110 transition-transform">
-                                <span class="material-symbols-outlined text-3xl">psychology</span>
-                            </div>
-                            <h3 class="text-2xl font-display font-bold text-white mb-4">Análisis por IA</h3>
-                            <p class="text-slate-400 leading-relaxed lowercase">Nuestro motor procesa dificultad de
-                                partidos, xG y noticias de lesiones para simular la estrategia óptima.</p>
-                        </div>
-                        <!-- Step 3 -->
-                        <div class="group relative p-8">
-                            <div
-                                class="absolute -left-4 -top-8 font-display text-[10rem] font-bold text-white/[0.03] pointer-events-none">
-                                03</div>
-                            <div
-                                class="relative z-10 mb-8 flex h-16 w-16 items-center justify-center rounded-2xl bg-surface text-accent-cyan ring-1 ring-white/10 shadow-xl group-hover:scale-110 transition-transform">
-                                <span class="material-symbols-outlined text-3xl">rocket_launch</span>
-                            </div>
-                            <h3 class="text-2xl font-display font-bold text-white mb-4">Optimiza y Gana</h3>
-                            <h4 class="sr-only">Paso Final</h4>
-                            <p class="text-slate-400 leading-relaxed lowercase">Aplica las transferencias y capitanes
-                                sugeridos. Mira cómo tu rango sube en la clasificación global.</p>
-                        </div>
-                    </div>
-                </div>
-                <!-- Connector Path -->
-                <svg id="connector-svg"
-                    class="absolute top-0 left-0 w-full h-full pointer-events-none z-0 hidden md:block">
-                    <path id="connector-path" d="" stroke="url(#line-gradient)" stroke-width="2" fill="none"
-                        stroke-dasharray="10,10" opacity="0.4" />
-                    <defs>
-                        <linearGradient id="line-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                            <stop offset="0%" stop-color="#00FF85" />
-                            <stop offset="50%" stop-color="#E90052" />
-                            <stop offset="100%" stop-color="#04F5FF" />
-                        </linearGradient>
-                    </defs>
-                </svg>
-            </section>
+
 
             <!-- Results Section with Chart -->
             <section id="stats" class="relative w-full py-32 px-6 bg-pl-dark bg-grid-pattern bg-fixed overflow-hidden">
