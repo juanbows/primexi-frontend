@@ -85,8 +85,8 @@
     position: absolute;
     inset: 0;
     background:
-        linear-gradient(110deg, rgba(0, 0, 0, 0.82) 0%, rgba(0, 0, 0, 0.42) 42%, rgba(0, 0, 0, 0.6) 100%),
-        radial-gradient(circle at 75% 28%, color-mix(in oklab, var(--accent) 17%, transparent), transparent 45%);
+        linear-gradient(110deg, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.15) 42%, rgba(0, 0, 0, 0.35) 100%),
+        radial-gradient(circle at 75% 28%, color-mix(in oklab, var(--accent) 12%, transparent), transparent 50%);
 }
 
 .hero-content {
@@ -101,8 +101,30 @@
 }
 
 .hero-text {
-    max-width: 560px;
-    transition: opacity 0.34s ease, transform 0.34s ease;
+    max-width: 480px;
+    padding: 1.75rem 2.25rem;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%);
+    backdrop-filter: blur(14px) saturate(1.2);
+    -webkit-backdrop-filter: blur(14px) saturate(1.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.45);
+    transition: opacity 0.34s ease, transform 0.34s ease, border-color 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    margin-left: 1rem;
+}
+
+.hero-text::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, transparent 50%, rgba(255, 255, 255, 0.02) 100%);
+    pointer-events: none;
+}
+
+.hero-text:hover {
+    border-color: rgba(255, 255, 255, 0.15);
 }
 
 .hero-text.is-fading {
@@ -206,6 +228,13 @@
     display: grid;
     gap: 0.7rem;
     justify-items: center;
+    padding: 1.5rem 1rem;
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 999px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .variant-divider {
