@@ -17,6 +17,7 @@
 
     <!-- Custom Styles -->
     <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/hero-parallax.css">
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
@@ -338,30 +339,40 @@
 
         .feat-3d-card {
             position: relative;
-            background: linear-gradient(145deg, rgba(15, 10, 30, 0.97) 0%, rgba(8, 4, 18, 1) 100%);
-            border: 1px solid rgba(255, 255, 255, 0.07);
+            background: linear-gradient(145deg, rgba(30, 22, 55, 0.98) 0%, rgba(18, 10, 40, 1) 100%);
+            border: 1px solid rgba(0, 255, 133, 0.15);
             border-radius: 20px;
             padding: 28px 26px 22px;
             overflow: hidden;
-            transition: transform 0.12s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            transition: transform 0.18s ease, box-shadow 0.4s ease, border-color 0.4s ease;
             transform-style: preserve-3d;
             will-change: transform;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.55), 0 1px 0 rgba(255, 255, 255, 0.04) inset;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.55), 0 1px 0 rgba(255, 255, 255, 0.06) inset, 0 0 20px rgba(0, 255, 133, 0.04);
         }
 
         .feat-3d-card:hover {
-            border-color: rgba(0, 255, 133, 0.25);
-            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.65), 0 0 40px rgba(0, 255, 133, 0.08);
+            border-color: rgba(0, 255, 133, 0.4);
+            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.65), 0 0 60px rgba(0, 255, 133, 0.15), 0 0 120px rgba(0, 255, 133, 0.06);
+        }
+
+        .feat-3d-card--pink {
+            border-color: rgba(233, 0, 82, 0.15);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.55), 0 1px 0 rgba(255, 255, 255, 0.06) inset, 0 0 20px rgba(233, 0, 82, 0.04);
         }
 
         .feat-3d-card--pink:hover {
-            border-color: rgba(233, 0, 82, 0.3);
-            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.65), 0 0 40px rgba(233, 0, 82, 0.1);
+            border-color: rgba(233, 0, 82, 0.45);
+            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.65), 0 0 60px rgba(233, 0, 82, 0.15), 0 0 120px rgba(233, 0, 82, 0.06);
+        }
+
+        .feat-3d-card--cyan {
+            border-color: rgba(4, 245, 255, 0.15);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.55), 0 1px 0 rgba(255, 255, 255, 0.06) inset, 0 0 20px rgba(4, 245, 255, 0.04);
         }
 
         .feat-3d-card--cyan:hover {
-            border-color: rgba(4, 245, 255, 0.25);
-            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.65), 0 0 40px rgba(4, 245, 255, 0.08);
+            border-color: rgba(4, 245, 255, 0.4);
+            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.65), 0 0 60px rgba(4, 245, 255, 0.15), 0 0 120px rgba(4, 245, 255, 0.06);
         }
 
         .feat-holo {
@@ -476,13 +487,13 @@
         }
 
         .feat-chip-green {
-            background: rgba(0, 255, 133, 0.1);
-            border-color: rgba(0, 255, 133, 0.3);
+            background: rgba(0, 255, 133, 0.15);
+            border-color: rgba(0, 255, 133, 0.4);
             color: #00FF85;
         }
 
         .feat-title {
-            font-size: 1.3rem;
+            font-size: 1.35rem;
             font-weight: 800;
             color: #fff;
             line-height: 1.25;
@@ -491,9 +502,50 @@
         }
 
         .feat-desc {
-            font-size: 0.8rem;
-            color: rgba(148, 163, 184, 0.75);
-            line-height: 1.55;
+            font-size: 0.82rem;
+            color: rgba(148, 163, 184, 0.85);
+            line-height: 1.6;
+        }
+
+        /* ── Scroll Reveal Animations ─────────────────────────────── */
+        .reveal-up {
+            opacity: 0;
+            transform: translateY(60px);
+            transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .reveal-up.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal-delay-1 {
+            transition-delay: 0.1s;
+        }
+
+        .reveal-delay-2 {
+            transition-delay: 0.25s;
+        }
+
+        .reveal-delay-3 {
+            transition-delay: 0.4s;
+        }
+
+        /* Section dividers for smoother visual flow */
+        .section-fade-top {
+            position: relative;
+        }
+
+        .section-fade-top::before {
+            content: '';
+            position: absolute;
+            top: -80px;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: linear-gradient(180deg, transparent 0%, var(--bg-section, #020617) 100%);
+            pointer-events: none;
+            z-index: 1;
         }
 
         .feat-chart-wrap {
@@ -714,37 +766,6 @@
         details>summary {
             list-style: none;
         }
-
-        .video-background {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 100vw;
-            height: 100vh;
-            transform: translate(-50%, -50%);
-            object-fit: cover;
-            pointer-events: none;
-            z-index: -1;
-        }
-
-        @media (min-aspect-ratio: 16/9) {
-            .video-background {
-                height: 56.25vw;
-            }
-        }
-
-        @media (max-aspect-ratio: 16/9) {
-            .video-background {
-                width: 177.78vh;
-            }
-        }
-
-        .hero-video-overlay {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(180deg, rgba(2, 6, 23, 0.4) 0%, rgba(2, 6, 23, 0.9) 100%);
-            z-index: 0;
-        }
     </style>
 </head>
 
@@ -755,6 +776,18 @@
     </div>
     <div id="cursor-halo"
         class="fixed top-0 left-0 w-12 h-12 border border-accent-green/30 rounded-full pointer-events-none z-[9998] hidden lg:block transition-all duration-300 ease-out opacity-0">
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-card">
+            <p class="loading-brand">PRIME<span style="color:var(--accent)">XI</span></p>
+            <p class="loading-sub">Preparando experiencia...</p>
+            <div class="loading-track">
+                <div class="loading-bar" id="loadingBar"></div>
+            </div>
+            <p class="loading-percent" id="loadingPercent">Cargando 0%</p>
+        </div>
     </div>
 
 
@@ -814,229 +847,51 @@
         </header>
 
         <main class="flex-grow">
-            <!-- Hero Section -->
-            <section id="hero-section" class="relative min-h-screen flex items-center pt-24 pb-12 overflow-hidden">
-                <!-- Background Animation Canvas -->
-                <canvas id="atmosphere-canvas" class="absolute inset-0 z-0 pointer-events-none op-30"></canvas>
-
-                <!-- Video Background -->
-                <div class="absolute inset-0 z-0 overflow-hidden">
-                    <iframe id="hero-player" class="video-background opacity-40"
-                        src="https://www.youtube.com/embed/MWIDhAQ0n9M?autoplay=1&mute=1&loop=1&playlist=MWIDhAQ0n9M&controls=0&showinfo=0&rel=0&enablejsapi=1"
-                        frameborder="0" allow="autoplay; fullscreen"></iframe>
-                    <div class="hero-video-overlay"></div>
-                </div>
-
-                <div id="hero-blob-1"
-                    class="absolute top-1/4 right-0 w-[500px] h-[500px] bg-secondary/10 rounded-full blur-[120px] pointer-events-none">
-                </div>
-                <div id="hero-blob-2"
-                    class="absolute bottom-0 left-0 w-[400px] h-[400px] bg-accent-green/10 rounded-full blur-[150px] pointer-events-none">
-                </div>
-
-                <div class="relative z-10 w-full max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center">
-                    <div id="hero-content" class="flex flex-col gap-8 text-center lg:text-left">
-                        <div
-                            class="inline-flex items-center gap-2 self-center lg:self-start px-4 py-1.5 rounded-full border border-secondary/30 bg-secondary/10 backdrop-blur-sm">
-                            <span class="flex h-2 w-2 rounded-full bg-secondary animate-pulse"></span>
-                            <span
-                                class="text-secondary text-xs font-bold uppercase tracking-wider font-display">Temporada
-                                24/25 Lista</span>
-                        </div>
-                        <h1 id="hero-title"
-                            class="text-5xl lg:text-7xl font-display font-bold leading-[1.1] tracking-tighter text-white relative">
-                            <span class="glitch-wrapper" data-text="GANA TU LIGA">GANA TU LIGA</span> <br />
-                            <span
-                                class="text-transparent bg-clip-text bg-gradient-to-r from-accent-green via-accent-cyan to-accent-green text-glow-pl glitch-wrapper"
-                                data-text="CON PRECISIÓN">CON
-                                PRECISIÓN</span>
-                        </h1>
-                        <p class="text-lg text-slate-400 max-w-xl mx-auto lg:mx-0 font-light leading-relaxed">
-                            El asistente definitivo impulsado por IA para mánagers de FPL. Optimiza tu plantilla con
-                            análisis predictivo, algoritmos de transferencia en tiempo real y selecciones de capitán
-                            basadas en datos.
-                        </p>
-
-                        <!-- AI Simulation Console -->
-                        <div class="ai-console max-w-xl mx-auto lg:mx-0">
-                            <div class="flex items-center gap-2 mb-2 opacity-60">
-                                <span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
-                                <span style="font-size:10px;letter-spacing:0.15em;">PRIME XI ENGINE — LIVE</span>
-                            </div>
-                            <div class="console-line" id="cl-1">▶ Cargando fixtures GW26–GW31...</div>
-                            <div class="console-line highlight" id="cl-2">▶ Ejecutando 2,500,000 simulaciones...</div>
-                            <div class="console-line" id="cl-3">▶ xP calculado: Haaland → <strong
-                                    style="color:#00FF85">12.4 ±1.8 pts</strong></div>
-                            <div class="console-line" id="cl-4">▶ Transferencia óptima: <strong
-                                    style="color:#04F5FF">Palmer IN (£6.7m)</strong></div>
-                            <div class="console-line" style="margin-top:4px;">▶ <span class="console-cursor"></span>
-                            </div>
-                        </div>
-                        <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                            <button
-                                class="magnetic flex items-center justify-center gap-2 rounded-lg h-14 px-10 bg-accent-green text-primary font-bold hover:bg-[#33ff9d] transition-all transform hover:-translate-y-1 shadow-lg hover:shadow-accent-green/30 group/btn">
-                                <span>Empezar Gratis</span>
-                                <span
-                                    class="material-symbols-outlined text-xl group-hover/btn:animate-spin">sports_soccer</span>
-                            </button>
-                            <button
-                                class="flex items-center justify-center gap-2 rounded-lg h-14 px-10 bg-white/5 border border-white/10 text-white font-medium hover:bg-white/10 backdrop-blur-sm transition-all">
-                                <span class="material-symbols-outlined text-xl">play_circle</span>
-                                <span>Ver Demo</span>
-                            </button>
-                        </div>
-
-                        <div
-                            class="flex flex-col sm:flex-row items-center gap-4 mt-4 justify-center lg:justify-start opacity-80">
-                            <div class="flex -space-x-3">
-                                <div
-                                    class="w-10 h-10 rounded-full border-2 border-primary bg-slate-800 flex items-center justify-center text-xs font-bold">
-                                    +2k</div>
-                                <div
-                                    class="w-10 h-10 rounded-full border-2 border-primary bg-secondary/20 flex items-center justify-center text-xs font-bold text-secondary">
-                                    XI</div>
-                            </div>
-                            <div class="text-sm text-slate-400">
-                                <span class="text-accent-green font-bold">10,000+</span> Mánager confían en nosotros
-                            </div>
-                        </div>
+            <!-- Hero Section — Premium Parallax -->
+            <section class="hero-section" id="hero">
+                <div class="hero-stage">
+                    <div class="hero-background">
+                        <img id="heroFrame" src="" alt="PRIME XI animation frame" draggable="false">
+                        <div class="hero-gradient"></div>
                     </div>
 
-                    <!-- Dashboard Mockup -->
-                    <div class="relative w-full max-w-[480px] mx-auto lg:mr-0 perspective-[1000px]">
-                        <div id="floating-card"
-                            class="absolute -left-8 top-20 z-20 hidden lg:flex flex-col gap-2 p-5 rounded-xl glass-panel border-accent-green/20">
-                            <div class="flex items-center gap-4">
-                                <div class="bg-accent-green/20 p-2 rounded-lg text-accent-green">
-                                    <span class="material-symbols-outlined text-xl">trending_up</span>
-                                </div>
-                                <div>
-                                    <p class="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Rango
-                                        Proyectado</p>
-                                    <p class="text-white font-display font-bold text-xl">Top 1%</p>
-                                </div>
+                    <div class="hero-content">
+                        <div class="hero-text" id="heroText">
+                            <p class="hero-brand" id="heroBrand">PRIME XI</p>
+                            <h1 id="heroTitle">CONTROL MODE</h1>
+                            <p class="hero-subtitle" id="heroSubtitle">SAFE PICKS + CONSISTENCY</p>
+                            <p class="hero-description" id="heroDescription">
+                                Construye un XI semanal estable con confianza en el capitán y proyecciones ponderadas
+                                por fixture.
+                            </p>
+                            <div class="hero-ctas">
+                                <button class="btn btn-filled magnetic">Empezar Gratis</button>
+                                <button class="btn btn-outline">Ver Demo</button>
                             </div>
                         </div>
 
-                        <div id="dashboard-mockup"
-                            class="relative bg-surface border border-white/10 rounded-2xl overflow-hidden shadow-2xl">
-                            <div class="h-10 border-b border-white/5 bg-primary/20 flex items-center px-4 gap-2">
-                                <div class="flex gap-1.5">
-                                    <div class="w-3 h-3 rounded-full bg-secondary/30"></div>
-                                    <div class="w-3 h-3 rounded-full bg-accent-cyan/30"></div>
-                                    <div class="w-3 h-3 rounded-full bg-accent-green/30"></div>
-                                </div>
-                                <div class="ml-4 h-4 w-32 bg-white/5 rounded-full"></div>
-                            </div>
-                            <div class="p-8">
-                                <div class="flex justify-between items-end mb-8">
-                                    <div>
-                                        <p class="text-slate-500 text-[10px] uppercase tracking-widest mb-1">Jornada 12
-                                        </p>
-                                        <h3 class="text-white text-2xl font-display font-bold">Once Recomendado</h3>
-                                    </div>
-                                    <div class="text-right">
-                                        <p class="text-slate-500 text-[10px] uppercase tracking-widest mb-1">Puntos
-                                            Esperados (xP)</p>
-                                        <p class="text-accent-green text-3xl font-display font-bold text-glow-pl">84.2
-                                            pts</p>
-                                        <p class="xp-confidence">± 4.1 pts · confianza 91%</p>
-                                    </div>
-                                </div>
-
-                                <div
-                                    class="relative aspect-[4/3] pitch-gradient rounded-xl border border-white/10 p-6 flex flex-col justify-between overflow-hidden">
-                                    <!-- Pitch Markings -->
-                                    <div class="absolute inset-0 pointer-events-none">
-                                        <div
-                                            class="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-20 border-b border-l border-r border-white/10 rounded-b-3xl">
-                                        </div>
-                                        <div
-                                            class="absolute bottom-0 left-1/2 -translate-x-1/2 w-48 h-12 border-t border-l border-r border-white/10 rounded-t-3xl">
-                                        </div>
-                                        <div class="absolute top-1/2 left-0 right-0 h-[1px] bg-white/10"></div>
-                                        <div
-                                            class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 border border-white/10 rounded-full">
-                                        </div>
-                                    </div>
-
-                                    <!-- xP / Ownership Toggle -->
-                                    <div class="flex justify-center gap-2 mb-3 relative z-20">
-                                        <span class="metric-badge active" id="toggle-xp"
-                                            onclick="switchMetric('xp')">xP</span>
-                                        <span class="metric-badge inactive" id="toggle-own"
-                                            onclick="switchMetric('own')">Ownership %</span>
-                                    </div>
-                                    <!-- Players -->
-                                    <div class="flex justify-center gap-12 relative z-10">
-                                        <div class="flex flex-col items-center gap-1.5">
-                                            <div
-                                                class="w-12 h-12 rounded-full bg-slate-800 border-2 player-easy flex items-center justify-center relative shadow-xl transform hover:scale-110 transition-transform">
-                                                <span class="text-white text-xs font-bold">HA</span>
-                                                <div
-                                                    class="absolute -top-2 -right-2 bg-accent-green text-primary text-[10px] font-black px-1.5 py-0.5 rounded-full">
-                                                    C</div>
-                                            </div>
-                                            <div class="bg-black/60 backdrop-blur-sm px-2 py-0.5 rounded text-[10px] text-accent-green font-bold metric-val"
-                                                data-xp="12.4" data-own="82%">12.4</div>
-                                        </div>
-                                        <div class="flex flex-col items-center gap-1.5">
-                                            <div
-                                                class="w-12 h-12 rounded-full bg-slate-800 border-2 player-medium flex items-center justify-center shadow-xl transform hover:scale-110 transition-transform">
-                                                <span class="text-white text-xs font-bold">WA</span>
-                                            </div>
-                                            <div class="bg-black/60 backdrop-blur-sm px-2 py-0.5 rounded text-[10px] text-white metric-val"
-                                                data-xp="6.2" data-own="38%">6.2</div>
-                                        </div>
-                                    </div>
-
-                                    <div class="flex justify-center gap-8 relative z-10">
-                                        <div
-                                            class="w-10 h-10 rounded-full bg-slate-800 border-2 border-white/20 flex items-center justify-center opacity-50">
-                                        </div>
-                                        <div class="flex flex-col items-center gap-1.5">
-                                            <div
-                                                class="w-12 h-12 rounded-full bg-slate-800 border-2 player-easy flex items-center justify-center relative shadow-xl transform hover:scale-110 transition-transform">
-                                                <span class="text-white text-xs font-bold">SA</span>
-                                                <div
-                                                    class="absolute -top-2 -right-2 bg-white text-primary text-[10px] font-black px-1.5 py-0.5 rounded-full">
-                                                    V</div>
-                                            </div>
-                                            <div class="bg-black/60 backdrop-blur-sm px-2 py-0.5 rounded text-[10px] text-white text-glow-pl metric-val"
-                                                data-xp="9.5" data-own="61%">9.5</div>
-                                        </div>
-                                        <div
-                                            class="w-10 h-10 rounded-full bg-slate-800 border-2 border-white/20 flex items-center justify-center opacity-50">
-                                        </div>
-                                    </div>
-
-                                    <div class="flex justify-center relative z-10">
-                                        <div
-                                            class="w-12 h-12 rounded-full bg-secondary/20 border-2 player-hard flex items-center justify-center shadow-xl">
-                                            <span class="text-secondary text-xs font-bold">RA</span>
-                                        </div>
-                                        <!-- Pitch Legend -->
-                                    </div>
-                                    <!-- Fixture Difficulty Legend -->
-                                    <div class="flex justify-center gap-4 mt-2 relative z-10">
-                                        <span class="flex items-center gap-1 text-[9px] text-slate-500"><span
-                                                class="w-2 h-2 rounded-full bg-accent-green inline-block"></span>Fácil</span>
-                                        <span class="flex items-center gap-1 text-[9px] text-slate-500"><span
-                                                class="w-2 h-2 rounded-full bg-accent-cyan inline-block"></span>Medio</span>
-                                        <span class="flex items-center gap-1 text-[9px] text-slate-500"><span
-                                                class="w-2 h-2 rounded-full bg-secondary inline-block"></span>Difícil</span>
-                                    </div>
-                                </div>
+                        <div class="hero-variant-nav">
+                            <p class="variant-number" id="variantNumber">01</p>
+                            <div class="variant-strip">
+                                <button class="variant-btn" id="prevVariant">
+                                    <span class="arrow">&#9650;</span> Anterior
+                                </button>
+                                <div class="variant-divider"></div>
+                                <button class="variant-btn" id="nextVariant">
+                                    Siguiente <span class="arrow">&#9660;</span>
+                                </button>
+                                <p class="variant-loading" id="variantLoading">Cargando...</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
+            <div class="hero-content-transition"></div>
 
             <!-- Feature Grid -->
-            <section id="features" class="relative z-10 bg-primary py-32 px-6">
+            <section id="features" class="relative z-10 bg-primary py-32 px-6" style="--bg-section: #020617">
                 <div class="max-w-7xl mx-auto">
-                    <div class="text-center mb-20 section-title-wrap" id="dtl-wrap">
+                    <div class="text-center mb-20 section-title-wrap reveal-up" id="dtl-wrap">
                         <!-- Eyebrow label -->
                         <div class="dtl-eyebrow">
                             <span class="dtl-dot"></span>
@@ -1075,7 +930,7 @@
                     <div class="grid md:grid-cols-3 gap-8 items-start" id="feat-grid">
 
                         <!-- ── Card 1: Predictive Points ── -->
-                        <div class="feat-3d-wrap" data-color="#00FF85">
+                        <div class="feat-3d-wrap reveal-up reveal-delay-1" data-color="#00FF85">
                             <div class="feat-3d-card" id="fc-1">
                                 <div class="feat-holo"></div>
                                 <div class="feat-corner-glow"
@@ -1155,7 +1010,7 @@
                         </div>
 
                         <!-- ── Card 2: Optimal Transfers ── -->
-                        <div class="feat-3d-wrap" data-color="#E90052" style="margin-top:2rem">
+                        <div class="feat-3d-wrap reveal-up reveal-delay-2" data-color="#E90052" style="margin-top:2rem">
                             <div class="feat-3d-card feat-3d-card--pink" id="fc-2">
                                 <div class="feat-holo feat-holo--pink"></div>
                                 <div class="feat-corner-glow"
@@ -1226,7 +1081,7 @@
                         </div>
 
                         <!-- ── Card 3: Elite Captains ── -->
-                        <div class="feat-3d-wrap" data-color="#04F5FF">
+                        <div class="feat-3d-wrap reveal-up reveal-delay-3" data-color="#04F5FF">
                             <div class="feat-3d-card feat-3d-card--cyan" id="fc-3">
                                 <div class="feat-holo feat-holo--cyan"></div>
                                 <div class="feat-corner-glow"
@@ -1289,37 +1144,17 @@
                     </div>
 
 
-                    <!-- Stats -->
-                    <div class="mt-20 grid grid-cols-2 md:grid-cols-4 gap-4 p-8 rounded-2xl glass-panel border-white/5">
-                        <div class="text-center md:border-r border-white/10">
-                            <span class="block text-3xl font-display font-bold text-white mb-1">2.5M+</span>
-                            <span
-                                class="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Simulaciones/Semana</span>
-                        </div>
-                        <div class="text-center md:border-r border-white/10">
-                            <span class="block text-3xl font-display font-bold text-accent-green mb-1">98%</span>
-                            <span
-                                class="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Precisión</span>
-                        </div>
-                        <div class="text-center md:border-r border-white/10">
-                            <span class="block text-3xl font-display font-bold text-white mb-1">10k+</span>
-                            <span class="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Mánagers
-                                Activos</span>
-                        </div>
-                        <div class="text-center">
-                            <span class="block text-3xl font-display font-bold text-secondary mb-1">£0</span>
-                            <span class="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Costo
-                                Inicial</span>
-                        </div>
-                    </div>
+
                 </div>
             </section>
 
 
 
             <!-- Results Section with Chart -->
-            <section id="stats" class="relative w-full py-32 px-6 bg-pl-dark bg-grid-pattern bg-fixed overflow-hidden">
-                <div class="layout-content-container max-w-6xl mx-auto relative z-10">
+            <section id="stats"
+                class="relative w-full py-32 px-6 bg-pl-dark bg-grid-pattern bg-fixed overflow-hidden section-fade-top"
+                style="--bg-section: #020617">
+                <div class="layout-content-container max-w-6xl mx-auto relative z-10 reveal-up">
                     <div class="flex flex-col gap-4 mb-20">
                         <div
                             class="flex items-center gap-2 text-accent-green text-sm font-bold uppercase tracking-widest font-display">
@@ -1416,7 +1251,7 @@
                 <div class="absolute inset-0 opacity-10"
                     style="background-image: radial-gradient(#3D195B 1px, transparent 1px); background-size: 24px 24px;">
                 </div>
-                <div class="relative z-10 max-w-4xl mx-auto text-center">
+                <div class="relative z-10 max-w-4xl mx-auto text-center reveal-up">
                     <h2
                         class="text-primary text-5xl md:text-7xl font-display font-black mb-8 tracking-tighter uppercase leading-tight">
                         ¿LISTO PARA ESCALAR<br />POSICIONES?
@@ -1475,6 +1310,7 @@
         </footer>
     </div>
 
+    <script src="../js/hero-parallax.js"></script>
     <script src="../js/script.js"></script>
 </body>
 

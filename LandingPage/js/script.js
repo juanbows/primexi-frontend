@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initScrollTriggers();
     initStepConnector();
     initConfetti();
+    initScrollReveal();
 
     // Header scroll background effect
     const header = document.querySelector('header');
@@ -159,6 +160,7 @@ function initHero3D() {
     if (window.matchMedia('(hover: none)').matches) return;
 
     const hero = document.getElementById('hero-section');
+    if (!hero) return; // Premium parallax hero replaces old hero-section
     const mockup = document.getElementById('dashboard-mockup');
     const floatCard = document.getElementById('floating-card');
     const content = document.getElementById('hero-content');
@@ -397,9 +399,9 @@ function onYouTubeIframeAPIReady() {
 
 // ─── xP / Ownership Metric Toggle ───────────────────────────────────────────
 function switchMetric(mode) {
-    const toggleXP  = document.getElementById('toggle-xp');
+    const toggleXP = document.getElementById('toggle-xp');
     const toggleOwn = document.getElementById('toggle-own');
-    const vals      = document.querySelectorAll('.metric-val');
+    const vals = document.querySelectorAll('.metric-val');
     if (!toggleXP) return;
     if (mode === 'xp') {
         toggleXP.classList.replace('inactive', 'active');
@@ -434,13 +436,13 @@ function switchMetric(mode) {
 
         card.addEventListener('mousemove', e => {
             const rect = card.getBoundingClientRect();
-            const cx = rect.left + rect.width  / 2;
-            const cy = rect.top  + rect.height / 2;
-            const dx = (e.clientX - cx) / (rect.width  / 2);
+            const cx = rect.left + rect.width / 2;
+            const cy = rect.top + rect.height / 2;
+            const dx = (e.clientX - cx) / (rect.width / 2);
             const dy = (e.clientY - cy) / (rect.height / 2);
 
             const rotX = -dy * 10;   // degrees
-            const rotY =  dx * 10;
+            const rotY = dx * 10;
             const shine = `radial-gradient(circle at ${(dx + 1) * 50}% ${(dy + 1) * 50}%, rgba(255,255,255,0.06) 0%, transparent 60%)`;
 
             card.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg) translateZ(8px)`;
@@ -450,8 +452,8 @@ function switchMetric(mode) {
         });
 
         card.addEventListener('mouseleave', () => {
-            card.style.transform  = '';
-            card.style.boxShadow  = '';
+            card.style.transform = '';
+            card.style.boxShadow = '';
             const holo = card.querySelector('.feat-holo');
             if (holo) holo.style.backgroundImage = '';
         });
@@ -479,7 +481,7 @@ function switchMetric(mode) {
     const wrap = document.getElementById('dtl-wrap');
     if (!wrap) return;
     const letters = wrap.querySelectorAll('.dtl-letter');
-    const bar     = document.getElementById('dtl-bar');
+    const bar = document.getElementById('dtl-bar');
     const barGlow = document.getElementById('dtl-bar-glow');
 
     const obs = new IntersectionObserver(entries => {
@@ -491,7 +493,7 @@ function switchMetric(mode) {
         // Animate bar after letters
         const barDelay = letters.length * 55 + 100;
         setTimeout(() => {
-            if (bar)     bar.classList.add('in');
+            if (bar) bar.classList.add('in');
             if (barGlow) barGlow.classList.add('in');
         }, barDelay);
         obs.disconnect();
@@ -499,3 +501,20 @@ function switchMetric(mode) {
 
     obs.observe(wrap);
 }());
+
+// ─── Scroll Reveal ──────────────────────────────────────────────────────────
+function initScrollReveal() {
+    const reveals = document.querySelectorAll('.reveal-up');
+    if (!reveals.length) return;
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('revealed');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+    reveals.forEach(el => observer.observe(el));
+}
