@@ -10,7 +10,7 @@ const HERO_CONFIG = {
         {
             title: "MODO CONTROL",
             subtitle: "ELECCIONES SEGURAS + CONSISTENCIA",
-            badgeText: "Secuencia cinemática: Control",
+            badgeText: "Control",
             description:
                 "Construye un XI estable con capitanes de alta confianza y proyecciones por fixture.",
             themeColor: "#00FF85",
@@ -21,7 +21,7 @@ const HERO_CONFIG = {
         {
             title: "MODO AGRESIVO",
             subtitle: "TECHO DE CAPITAN",
-            badgeText: "Secuencia cinemática: Agresivo",
+            badgeText: "Agresivo",
             description:
                 "Maximiza el techo de puntos con capitanes explosivos y transferencias de alto impacto.",
             themeColor: "#26D5FF",
@@ -32,7 +32,7 @@ const HERO_CONFIG = {
         {
             title: "MODO DIFERENCIAL",
             subtitle: "ESCALA EN EL RANKING",
-            badgeText: "Secuencia cinemática: Diferencial",
+            badgeText: "Diferencial",
             description:
                 "Diferenciales calculados y decisiones optimizadas para ganar posiciones.",
             themeColor: "#FFCF40",
@@ -45,6 +45,7 @@ const HERO_CONFIG = {
 
 const HERO_MAX_FRAME_INDEX = 191;
 const HERO_FRAME_SUFFIX = "_delay-0.041s.webp";
+const PAGE_LOADER_MIN_VISIBLE_MS = 7000;
 
 const heroState = {
     variants: [],
@@ -61,16 +62,6 @@ function clamp(value, min, max) {
     return Math.min(max, Math.max(min, value));
 }
 
-function setPageLoaderProgress(percent) {
-    if (!heroDom.pageLoaderProgress || !heroDom.pageLoaderBar) {
-        return;
-    }
-
-    const safePercent = clamp(Math.round(percent), 0, 100);
-    heroDom.pageLoaderProgress.textContent = `${safePercent}%`;
-    heroDom.pageLoaderBar.style.width = `${safePercent}%`;
-}
-
 function hidePageLoader() {
     document.body.classList.remove("pp-is-loading");
     if (heroDom.pageLoaderVideo) {
@@ -80,6 +71,14 @@ function hidePageLoader() {
         return;
     }
     heroDom.pageLoader.classList.add("is-hidden");
+}
+
+function hidePageLoaderWithMinimumDuration(loaderStartTime) {
+    const elapsed = performance.now() - loaderStartTime;
+    const remaining = Math.max(PAGE_LOADER_MIN_VISIBLE_MS - elapsed, 0);
+    window.setTimeout(() => {
+        hidePageLoader();
+    }, remaining);
 }
 
 function initHeaderScroll() {
@@ -381,7 +380,7 @@ function fadeHeroTextToVariant(variant) {
     heroDom.heroText.classList.add("is-fading");
     window.setTimeout(() => {
         heroDom.heroBrand.textContent = HERO_CONFIG.appName;
-        heroDom.heroBadgeText.textContent = variant.badgeText || "Secuencia cinemática";
+        heroDom.heroBadgeText.textContent = variant.badgeText || "Control";
         heroDom.heroTitle.textContent = variant.title;
         heroDom.heroSubtitle.textContent = variant.subtitle;
         heroDom.heroDescription.textContent = `${variant.description} ${HERO_CONFIG.appDescription}`;
@@ -412,8 +411,6 @@ async function switchVariant(nextVariantIndex) {
 
 function cacheHeroDomNodes() {
     heroDom.pageLoader = document.getElementById("pp-page-loader");
-    heroDom.pageLoaderProgress = document.getElementById("pp-page-loader-progress");
-    heroDom.pageLoaderBar = document.getElementById("pp-page-loader-bar");
     heroDom.pageLoaderVideo = document.getElementById("pp-page-loader-video");
     heroDom.heroSection = document.getElementById("hero");
     heroDom.heroFrame = document.getElementById("pp-hero-frame");
@@ -481,15 +478,16 @@ function initPageLoaderVideo() {
 }
 
 async function initParallaxHero() {
+    const loaderStartTime = performance.now();
+
     if (!cacheHeroDomNodes()) {
-        hidePageLoader();
+        hidePageLoaderWithMinimumDuration(loaderStartTime);
         return;
     }
 
     heroState.variants = sanitizeVariants(HERO_CONFIG.variants);
     const initialVariant = heroState.variants[heroState.activeVariant];
 
-    setPageLoaderProgress(0);
     initPageLoaderVideo();
     applyThemeColor(initialVariant.themeColor || HERO_CONFIG.defaultThemeColor);
     fadeHeroTextToVariant(initialVariant);
@@ -497,7 +495,6 @@ async function initParallaxHero() {
 
     await preloadInitialFrames(heroState.activeVariant, (loaded, total) => {
         const percent = Math.round((loaded / total) * 100);
-        setPageLoaderProgress(percent);
         showVariantLoading(true, `Cargando ${percent}%`);
     });
 
@@ -505,8 +502,7 @@ async function initParallaxHero() {
     requestHeroRender(true);
     bindHeroInteractions();
     showVariantLoading(false);
-    setPageLoaderProgress(100);
-    window.setTimeout(hidePageLoader, 180);
+    hidePageLoaderWithMinimumDuration(loaderStartTime);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
